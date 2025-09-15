@@ -1,0 +1,100 @@
+import React from 'react';
+import { Settings, MessageSquare, FileText, Zap, Database, Code2, BarChart3 } from 'lucide-react';
+import { useAppStore } from '../store/useAppStore';
+import ApiSettings from './sidebar/ApiSettings';
+import ModelSettings from './sidebar/ModelSettings';
+import MemorySettings from './sidebar/MemorySettings';
+import ChatManagement from './sidebar/ChatManagement';
+import FileManagement from './sidebar/FileManagement';
+import QuickActions from './sidebar/QuickActions';
+
+const Sidebar: React.FC = () => {
+  const { toggleSettings, togglePreviousChats, toggleAnalytics } = useAppStore();
+
+  return (
+    <aside className="w-80 card-gradient border-r border-white/6 p-4 overflow-auto custom-scrollbar">
+      {/* Brand Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-9 h-9 rounded-full logo-gradient flex items-center justify-center">
+          <Code2 className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <div className="font-bold text-lg text-white">NikkuAi09</div>
+          <small className="text-[var(--muted)] text-xs">Professional AI Development Platform</small>
+        </div>
+      </div>
+
+      {/* API Settings Section */}
+      <div className="mb-4">
+        <ApiSettings />
+      </div>
+
+      {/* Model Settings Section */}
+      <div className="mb-4">
+        <ModelSettings />
+      </div>
+
+      {/* Memory Settings Section */}
+      <div className="mb-4">
+        <MemorySettings />
+      </div>
+
+      {/* Chat Management Section */}
+      <div className="mb-4">
+        <ChatManagement />
+      </div>
+
+      {/* File Management Section */}
+      <div className="mb-4">
+        <FileManagement />
+      </div>
+
+      {/* Quick Actions Section */}
+      <div className="mb-4">
+        <QuickActions />
+      </div>
+
+      {/* Analytics Section */}
+      <div className="mb-4">
+        <button
+          onClick={toggleAnalytics}
+          className="w-full bg-[#232655] hover:bg-[#2a2d5f] text-[var(--text)] font-semibold py-2 px-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+        >
+          <BarChart3 className="w-4 h-4" />
+          Analytics Dashboard
+        </button>
+      </div>
+      {/* Professional Features Preview */}
+      <div className="bg-[var(--card)] border border-white/6 rounded-[var(--radius)] p-3 mb-4">
+        <h4 className="text-xs uppercase tracking-wider text-[var(--muted)] mb-3 flex items-center gap-2">
+          <Zap className="w-3 h-3" />
+          Pro Features
+        </h4>
+        <div className="space-y-2 text-xs text-[var(--muted)]">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-400"></div>
+            Monaco Editor (50+ languages)
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+            Advanced AI Agents
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-purple-400"></div>
+            Real-time Collaboration
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-orange-400"></div>
+            Analytics Dashboard
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-pink-400"></div>
+            2000+ Features Active...
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;
