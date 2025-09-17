@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { 
-  File, Plus, Save, Trash2, FileCode, FolderOpen, Play, Terminal, 
-  RefreshCw, Zap, Search, GitBranch, Maximize2, Code2, Brain,
-  Database, Globe, Package, TestTube, Shield, Sparkles, Activity
+  File, Plus, Save, Trash2, FileCode, FolderOpen, Play, Terminal, MessageSquare,
+  RefreshCw, Zap, Search, GitBranch, Maximize2, Code2, Brain, Send, User, Bot,
+  Database, Globe, Package, TestTube, Shield, Sparkles, Activity, X
 } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { toast } from 'react-toastify';
+import { sendToAPI } from '../../utils/api';
 
 const CodeArea: React.FC = () => {
   const { 
@@ -34,7 +35,12 @@ const CodeArea: React.FC = () => {
   const [dbConnected, setDbConnected] = useState(false);
   const [liveTypingContent, setLiveTypingContent] = useState('');
   const [isLiveTyping, setIsLiveTyping] = useState(false);
+  const [showCodeChat, setShowCodeChat] = useState(false);
+  const [codeChatMessages, setCodeChatMessages] = useState<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: number}>>([]);
+  const [codeChatInput, setCodeChatInput] = useState('');
+  const [isCodeChatLoading, setIsCodeChatLoading] = useState(false);
   const editorRef = useRef<any>(null);
+  const codeChatEndRef = useRef<HTMLDivElement>(null);
 
   const currentFile = files.find(f => f.name === activeFile);
 
@@ -74,6 +80,63 @@ const CodeArea: React.FC = () => {
     toast.success('Live typing completed!');
   };
 
+  const handleCodeChatSend = async () => {
+    if (!codeChatInput.trim() || isCodeChatLoading) return;
+    
+    const userMessage = codeChatInput.trim();
+    setCodeChatInput('');
+    setIsCodeChatLoading(true);
+    
+    // Add user message
+    const newUserMessage = {
+      id: Math.random().toString(36).substr(2, 9),
+      role: 'user' as const,
+      content: userMessage,
+      timestamp: Date.now(),
+    };
+    setCodeChatMessages(prev => [...prev, newUserMessage]);
+    
+    try {
+      // Get current file context
+      const fileContext = currentFile ? `\n\nCurrent file: ${currentFile.name}\n\`\`\`${currentFile.language}\n${currentFile.content}\n\`\`\`` : '';
+      
+      const response = await sendToAPI({
+        message: `${userMessage}${fileContext}`,
+        mode: 'agent',
+        settings,
+        userMemory,
+        filesContext,
+        stylePreset: 'pro',
+        sessionId: currentSessionId,
+      });
+      
+      // Add AI response
+      const aiMessage = {
+        id: Math.random().toString(36).substr(2, 9),
+        role: 'assistant' as const,
+        content: response,
+        timestamp: Date.now(),
+      };
+      setCodeChatMessages(prev => [...prev, aiMessage]);
+      
+    } catch (error) {
+      const errorMessage = {
+        id: Math.random().toString(36).substr(2, 9),
+        role: 'assistant' as const,
+        content: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: Date.now(),
+      };
+      setCodeChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsCodeChatLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (codeChatEndRef.current) {
+      codeChatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [codeChatMessages]);
   const handleCreateFile = () => {
     if (!newFileName.trim()) {
       toast.error('Please enter a file name');
@@ -496,7 +559,7 @@ const CodeArea: React.FC = () => {
           
           {/* Tab Navigation */}
           <div className="flex border-b border-white/6 bg-[#0a0e1f]">
-            {['editor', 'terminal', 'docker'].map((tab) => (
+            {['editor', 'terminal', 'docker', 'chat'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -506,7 +569,14 @@ const CodeArea: React.FC = () => {
                     : 'text-[var(--muted)] hover:text-white'
                 }`}
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab === 'chat' ? (
+                  <div className="flex items-center gap-1">
+                    <MessageSquare className="w-3 h-3" />
+                    Code Chat
+                  </div>
+                ) : (
+                  tab.charAt(0).toUpperCase() + tab.slice(1)
+                )}
               </button>
             ))}
           </div>
@@ -590,6 +660,127 @@ const CodeArea: React.FC = () => {
                   <pre className="text-xs text-blue-400 whitespace-pre-wrap">
                     {output || 'Docker ready for build...'}
                   </pre>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'chat' && (
+              <div className="flex-1 flex flex-col">
+                {/* Code Chat Header */}
+                <div className="p-4 border-b border-white/6 bg-[#06102a]">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-[var(--acc1)]" />
+                    <span className="text-sm font-semibold text-white">Code Chat</span>
+                    <div className="ml-auto text-xs text-[var(--muted)]">
+                      Chat about your code with AI
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Chat Messages */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#06102a]">
+                  {codeChatMessages.length === 0 ? (
+                    <div className="text-center py-8 text-[var(--muted)]">
+                      <Brain className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">Ask me anything about your code!</p>
+                      <p className="text-xs mt-1">I can explain, debug, optimize, and help you improve it.</p>
+                    </div>
+                  ) : (
+                    codeChatMessages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        {message.role === 'assistant' && (
+                          <div className="w-6 h-6 rounded-full accent-gradient flex items-center justify-center flex-shrink-0">
+                            <Bot className="w-3 h-3 text-white" />
+                          </div>
+                        )}
+                        
+                        <div className={`max-w-xs p-3 rounded-lg text-sm ${
+                          message.role === 'user'
+                            ? 'bg-[var(--acc1)]/20 text-white'
+                            : 'bg-[#1a1e3f] text-white'
+                        }`}>
+                          <div className="whitespace-pre-wrap">{message.content}</div>
+                          <div className="text-xs text-[var(--muted)] mt-1">
+                            {new Date(message.timestamp).toLocaleTimeString()}
+                          </div>
+                        </div>
+                        
+                        {message.role === 'user' && (
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                            <User className="w-3 h-3 text-white" />
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                  
+                  {isCodeChatLoading && (
+                    <div className="flex gap-2 justify-start">
+                      <div className="w-6 h-6 rounded-full accent-gradient flex items-center justify-center">
+                        <Bot className="w-3 h-3 text-white animate-pulse" />
+                      </div>
+                      <div className="bg-[#1a1e3f] p-3 rounded-lg">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 bg-[var(--acc1)] rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-[var(--acc1)] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-[var(--acc1)] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div ref={codeChatEndRef} />
+                </div>
+                
+                {/* Chat Input */}
+                <div className="p-4 border-t border-white/6 bg-[#06102a]">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={codeChatInput}
+                      onChange={(e) => setCodeChatInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleCodeChatSend()}
+                      placeholder="Ask about your code..."
+                      className="flex-1 bg-[#0e1130] border border-white/12 text-[var(--text)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--acc1)] transition-colors"
+                      disabled={isCodeChatLoading}
+                    />
+                    <button
+                      onClick={handleCodeChatSend}
+                      disabled={!codeChatInput.trim() || isCodeChatLoading}
+                      className="bg-[var(--acc1)] hover:bg-[var(--acc1)]/80 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-1"
+                    >
+                      {isCodeChatLoading ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                  
+                  {/* Quick Actions */}
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      onClick={() => setCodeChatInput('Explain this code')}
+                      className="text-xs bg-white/10 hover:bg-white/20 text-[var(--text)] px-2 py-1 rounded transition-colors"
+                    >
+                      Explain Code
+                    </button>
+                    <button
+                      onClick={() => setCodeChatInput('Find bugs in this code')}
+                      className="text-xs bg-white/10 hover:bg-white/20 text-[var(--text)] px-2 py-1 rounded transition-colors"
+                    >
+                      Find Bugs
+                    </button>
+                    <button
+                      onClick={() => setCodeChatInput('Optimize this code')}
+                      className="text-xs bg-white/10 hover:bg-white/20 text-[var(--text)] px-2 py-1 rounded transition-colors"
+                    >
+                      Optimize
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

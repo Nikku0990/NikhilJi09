@@ -141,6 +141,15 @@ const ChatBar: React.FC = () => {
     let filesCreated = 0;
     const createdFiles: string[] = [];
     
+    // Show file creation animation
+    toast.info(
+      <div className="flex items-center gap-2">
+        <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+        <span>Creating files...</span>
+      </div>,
+      { autoClose: 2000 }
+    );
+    
     // Try to match the file creation format
     const matches = [...response.matchAll(fileCreationPattern)];
     matches.forEach((match) => {
@@ -166,16 +175,16 @@ const ChatBar: React.FC = () => {
       createdFiles.push(fileName);
       filesCreated++;
       
-      // Show success toast with animation
+      // Show individual file creation animation
       setTimeout(() => {
         toast.success(
           <div className="flex items-center gap-2">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Created {fileName}</span>
+            <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+            <span>✅ Created {fileName}</span>
           </div>,
-          { autoClose: 2000 }
+          { autoClose: 3000 }
         );
-      }, index * 300);
+      }, (index + 1) * 500);
     });
     
     // Fallback to regular code block detection
@@ -225,37 +234,42 @@ const ChatBar: React.FC = () => {
           createdFiles.push(fileName);
           filesCreated++;
           
-          // Show success toast with animation
+          // Show individual file creation animation
           setTimeout(() => {
             toast.success(
               <div className="flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Created {fileName}</span>
+                <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                <span>✅ Created {fileName}</span>
               </div>,
-              { autoClose: 2000 }
+              { autoClose: 3000 }
             );
-          }, index * 300);
+          }, (index + 1) * 500);
         }
       });
     }
     
     if (filesCreated > 0) {
-      // Auto-open code editor
+      // Auto-open code editor with animation
       if (!showCodeArea) {
         setTimeout(() => {
           toggleCodeArea();
-          toast.success('Professional Code Editor activated!');
-        }, 1000);
+          toast.success(
+            <div className="flex items-center gap-2">
+              <Code className="w-4 h-4 text-blue-400" />
+              <span>🚀 Professional Code Editor activated!</span>
+            </div>
+          );
+        }, filesCreated * 500 + 500);
       }
       
-      // Add file creation notification to chat
+      // Add comprehensive file creation summary
       setTimeout(() => {
         addMessage(currentSessionId, {
           role: 'assistant',
-          content: `Professional Files Processed Successfully!\n\nAdded ${filesCreated} file(s) to your project:\n- ${createdFiles.join('\n- ')}\n\nAI Analysis Ready:\nAll files are now available for:\n- Deep code analysis\n- Performance optimization\n- Security scanning\n- Bug detection & fixing\n- Quality metrics`,
+          content: `🎉 **Professional Files Created Successfully!**\n\n📁 **Added ${filesCreated} file(s) to your project:**\n${createdFiles.map(f => `- ✅ ${f}`).join('\n')}\n\n🧠 **AI Analysis Ready:**\nAll files are now available for:\n- 🔍 Deep code analysis\n- 🚀 Performance optimization  \n- 🛡️ Security scanning\n- 🐛 Bug detection & fixing\n- 📊 Quality metrics\n- 🧪 Test generation\n- 📚 Documentation\n\n💡 **Pro Tip:** Use the Code Chat tab in the editor to ask specific questions about your files!`,
           timestamp: Date.now(),
         });
-      }, 2000);
+      }, filesCreated * 500 + 1000);
     }
   };
 

@@ -109,6 +109,7 @@ export interface AppState {
   showSettings: boolean;
   showPreviousChats: boolean;
   showAnalytics: boolean;
+  showCommandPalette: boolean;
   activeFile: string | null;
   
   // Files
@@ -152,6 +153,7 @@ export interface AppState {
   toggleSettings: () => void;
   togglePreviousChats: () => void;
   toggleAnalytics: () => void;
+  toggleCommandPalette: () => void;
   
   // Analytics Actions
   updateAnalytics: () => void;
@@ -230,6 +232,7 @@ export const useAppStore = create<AppState>()(
       showSettings: false,
       showPreviousChats: false,
       showAnalytics: false,
+      showCommandPalette: false,
       activeFile: null,
       files: [],
       filesContext: [],
@@ -432,6 +435,7 @@ export const useAppStore = create<AppState>()(
       toggleSettings: () => set((state) => ({ showSettings: !state.showSettings })),
       togglePreviousChats: () => set((state) => ({ showPreviousChats: !state.showPreviousChats })),
       toggleAnalytics: () => set((state) => ({ showAnalytics: !state.showAnalytics })),
+      toggleCommandPalette: () => set((state) => ({ showCommandPalette: !state.showCommandPalette })),
       
       // Analytics Actions
       updateAnalytics: () => {
