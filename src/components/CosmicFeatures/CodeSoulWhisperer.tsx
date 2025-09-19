@@ -29,29 +29,74 @@ const CodeSoulWhisperer: React.FC = () => {
 
     setIsAnalyzing(true);
     
-    // Simulate AI analysis
+    toast.info('🔮 Analyzing code soul...', { autoClose: 2000 });
+    
+    // Simulate AI analysis with real code analysis
     await new Promise(resolve => setTimeout(resolve, 2000));
     
+    const lines = currentFile.content.split('\n');
+    const traumatizedFunctions = [];
+    const lonelyVariables = [];
+    const hopefulComments = [];
+    
+    // Real analysis
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Detect traumatized functions
+      if (line.includes('function') && (line.includes('fuck') || line.includes('shit') || line.length > 100)) {
+        traumatizedFunctions.push(`Line ${i + 1}: ${line.substring(0, 50)}...`);
+      }
+      
+      // Detect lonely variables
+      if (line.includes('var ') || line.includes('let unused') || line.includes('temp')) {
+        lonelyVariables.push(`Line ${i + 1}: ${line.trim()}`);
+      }
+      
+      // Detect hopeful comments
+      if (line.includes('// TODO') || line.includes('// FIXME') || line.includes('// Future')) {
+        hopefulComments.push(line.trim());
+      }
+    }
+    
+    const happiness = Math.max(10, 100 - (traumatizedFunctions.length * 20) - (lonelyVariables.length * 10));
+    const clarity = Math.max(10, 100 - (lines.filter(l => l.length > 120).length * 5));
+    const potential = Math.min(100, 50 + (hopefulComments.length * 15) + (lines.filter(l => l.includes('const')).length * 2));
+    
+    let overallMood: CodeSoulAnalysis['overallMood'] = 'neutral';
+    if (happiness > 80) overallMood = 'happy';
+    else if (happiness < 40) overallMood = 'sad';
+    else if (traumatizedFunctions.length > 3) overallMood = 'traumatized';
+    else if (hopefulComments.length > 2) overallMood = 'hopeful';
+    
     const mockAnalysis: CodeSoulAnalysis = {
-      happiness: Math.floor(Math.random() * 100),
-      clarity: Math.floor(Math.random() * 100),
-      potential: Math.floor(Math.random() * 100),
-      traumatizedFunctions: ['handleLogin', 'processPayment', 'validateUser'],
-      lonelyVariables: ['unusedVar', 'tempData', 'oldConfig'],
-      hopefulComments: ['// TODO: Make this better', '// Future enhancement', '// This will be awesome'],
-      overallMood: ['happy', 'sad', 'neutral', 'traumatized', 'hopeful'][Math.floor(Math.random() * 5)] as any
+      happiness,
+      clarity,
+      potential,
+      traumatizedFunctions,
+      lonelyVariables,
+      hopefulComments,
+      overallMood
     };
     
     setAnalysis(mockAnalysis);
     setIsAnalyzing(false);
     
     toast.success('🔮 Code soul analysis complete!');
+    
+    addMessage(currentSessionId, {
+      role: 'assistant',
+      content: `🔮 **Code Soul Analysis Complete!**\n\n📊 **Soul Metrics:**\n- Happiness: ${happiness}%\n- Clarity: ${clarity}%\n- Potential: ${potential}%\n\n😰 **Issues Found:**\n- Traumatized Functions: ${traumatizedFunctions.length}\n- Lonely Variables: ${lonelyVariables.length}\n\n✨ **Hopeful Elements:** ${hopefulComments.length}\n\n🎭 **Overall Mood:** ${overallMood.charAt(0).toUpperCase() + overallMood.slice(1)}\n\n💡 **Recommendation:** ${happiness < 50 ? 'Your code needs healing! Click "Heal Soul" to improve its emotional state.' : 'Your code is in good spirits! Keep up the great work.'}`,
+      timestamp: Date.now(),
+    });
   };
 
   const healCodeSoul = async () => {
     if (!analysis || !currentFile) return;
     
     setIsHealing(true);
+    
+    toast.info('✨ Healing code soul...', { autoClose: 3000 });
     
     // Simulate healing process
     await new Promise(resolve => setTimeout(resolve, 3000));
@@ -63,9 +108,11 @@ const CodeSoulWhisperer: React.FC = () => {
     healedCode = healedCode.replace(/\/\/ This is fucked/g, '// This is optimized');
     healedCode = healedCode.replace(/\/\/ Fuck this/g, '// Refactored for clarity');
     healedCode = healedCode.replace(/var /g, 'const ');
+    healedCode = healedCode.replace(/shit/g, 'data');
+    healedCode = healedCode.replace(/fuck/g, 'process');
     
     // Add healing comments
-    healedCode = `// 🌟 Code Soul Healed by NikkuAi09\n// Happiness: ${analysis.happiness + 30}% | Clarity: ${analysis.clarity + 25}%\n\n${healedCode}`;
+    healedCode = `// 🌟 Code Soul Healed by NikkuAi09\n// Happiness: ${analysis.happiness + 30}% | Clarity: ${analysis.clarity + 25}%\n// Healed on: ${new Date().toLocaleString()}\n\n${healedCode}`;
     
     updateFile(currentFile.name, healedCode);
     setIsHealing(false);
@@ -81,7 +128,7 @@ const CodeSoulWhisperer: React.FC = () => {
     
     addMessage(currentSessionId, {
       role: 'assistant',
-      content: `🌟 **Code Soul Healing Complete!**\n\n✨ Your code's soul has been healed:\n- Happiness: +30%\n- Clarity: +25%\n- Potential: +20%\n\n🧠 Traumatized functions have been comforted\n💎 Lonely variables have been optimized\n🚀 Hopeful comments have been actualized\n\nYour code is now radiating positive energy! 🌈`,
+      content: `🌟 **Code Soul Healing Complete!**\n\n✨ Your code's soul has been healed:\n- Happiness: +30% (now ${Math.min(100, analysis.happiness + 30)}%)\n- Clarity: +25% (now ${Math.min(100, analysis.clarity + 25)}%)\n- Potential: +20% (now ${Math.min(100, analysis.potential + 20)}%)\n\n🧠 **Healing Actions Performed:**\n- Traumatized functions comforted\n- Profanity replaced with professional terms\n- Variables optimized from 'var' to 'const'\n- Healing certificate added to code\n\n🌈 **Result:** Your code is now radiating positive energy and professional vibes!`,
       timestamp: Date.now(),
     });
     
@@ -193,8 +240,13 @@ const CodeSoulWhisperer: React.FC = () => {
                     <div className="text-sm font-semibold text-red-400 mb-1">
                       😰 Traumatized Functions ({analysis.traumatizedFunctions.length})
                     </div>
-                    <div className="text-xs text-gray-300">
-                      {analysis.traumatizedFunctions.join(', ')}
+                    <div className="text-xs text-gray-300 space-y-1">
+                      {analysis.traumatizedFunctions.slice(0, 3).map((func, i) => (
+                        <div key={i}>{func}</div>
+                      ))}
+                      {analysis.traumatizedFunctions.length > 3 && (
+                        <div className="text-gray-400">...and {analysis.traumatizedFunctions.length - 3} more</div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -204,8 +256,13 @@ const CodeSoulWhisperer: React.FC = () => {
                     <div className="text-sm font-semibold text-blue-400 mb-1">
                       😢 Lonely Variables ({analysis.lonelyVariables.length})
                     </div>
-                    <div className="text-xs text-gray-300">
-                      {analysis.lonelyVariables.join(', ')}
+                    <div className="text-xs text-gray-300 space-y-1">
+                      {analysis.lonelyVariables.slice(0, 3).map((variable, i) => (
+                        <div key={i}>{variable}</div>
+                      ))}
+                      {analysis.lonelyVariables.length > 3 && (
+                        <div className="text-gray-400">...and {analysis.lonelyVariables.length - 3} more</div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -215,8 +272,13 @@ const CodeSoulWhisperer: React.FC = () => {
                     <div className="text-sm font-semibold text-green-400 mb-1">
                       ✨ Hopeful Comments ({analysis.hopefulComments.length})
                     </div>
-                    <div className="text-xs text-gray-300">
-                      {analysis.hopefulComments.join(', ')}
+                    <div className="text-xs text-gray-300 space-y-1">
+                      {analysis.hopefulComments.slice(0, 3).map((comment, i) => (
+                        <div key={i}>{comment}</div>
+                      ))}
+                      {analysis.hopefulComments.length > 3 && (
+                        <div className="text-gray-400">...and {analysis.hopefulComments.length - 3} more</div>
+                      )}
                     </div>
                   </div>
                 )}
