@@ -134,7 +134,7 @@ const ChatBar: React.FC = () => {
 
   const extractAndCreateFiles = (response: string) => {
     // Look for file creation patterns
-    const fileCreationPattern = /📁 Creating file: ([^\n]+)\n```(\w+)?\n([\s\S]*?)```/g;
+    const fileCreationPattern = /📁 (?:Creating file|Updating file): ([^\n]+)\n```(\w+)?\n([\s\S]*?)```/g;
     const codeBlocks = response.match(/```(\w+)?\n([\s\S]*?)```/g);
     if (!codeBlocks) return;
 
@@ -157,8 +157,29 @@ const ChatBar: React.FC = () => {
       const language = match[2] || 'txt';
       const content = match[3].trim();
       
-      // Create file in editor
-      createFile(fileName, content);
+      // Check if file exists - update instead of create
+      const existingFile = files.find(f => f.name === fileName);
+      if (existingFile) {
+        // Update existing file
+        updateFile(fileName, content);
+        toast.success(
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-blue-400 rounded-full animate-pulse"></div>
+            <span>📝 Updated {fileName}</span>
+          </div>,
+          { autoClose: 3000 }
+        );
+      } else {
+        // Create new file
+        createFile(fileName, content);
+        toast.success(
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+            <span>✅ Created {fileName}</span>
+          </div>,
+          { autoClose: 3000 }
+        );
+      }
       
       // Add to context
       addFileToContext({
@@ -167,7 +188,7 @@ const ChatBar: React.FC = () => {
         lastModified: Date.now(),
       });
       
-      // Set as active file if first one
+      // Set as active file
       if (filesCreated === 0) {
         setActiveFile(fileName);
       }
@@ -175,16 +196,6 @@ const ChatBar: React.FC = () => {
       createdFiles.push(fileName);
       filesCreated++;
       
-      // Show individual file creation animation
-      setTimeout(() => {
-        toast.success(
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
-            <span>✅ Created {fileName}</span>
-          </div>,
-          { autoClose: 3000 }
-        );
-      }, (index + 1) * 500);
     });
     
     // Fallback to regular code block detection

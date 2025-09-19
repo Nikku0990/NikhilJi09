@@ -40,6 +40,7 @@ const CodeArea: React.FC = () => {
   const [codeChatInput, setCodeChatInput] = useState('');
   const [isCodeChatLoading, setIsCodeChatLoading] = useState(false);
   const [shouldLiveType, setShouldLiveType] = useState(false);
+  const [aiAwareness, setAiAwareness] = useState('');
   const editorRef = useRef<any>(null);
   const codeChatEndRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +70,14 @@ const CodeArea: React.FC = () => {
     window.addEventListener('fileCreated', handleFileCreated);
     return () => window.removeEventListener('fileCreated', handleFileCreated);
   }, []);
+
+  // Update AI awareness when files change
+  useEffect(() => {
+    const fileList = files.map(f => `${f.name} (${f.content.length} chars)`).join(', ');
+    const currentFileInfo = currentFile ? `Current file: ${currentFile.name} with ${currentFile.content.split('\n').length} lines` : 'No file selected';
+    setAiAwareness(`Files available: ${fileList}. ${currentFileInfo}`);
+  }, [files, currentFile]);
+
   const startLiveTyping = async (content: string) => {
     if (!content || isLiveTyping) return;
     
@@ -121,6 +130,14 @@ const CodeArea: React.FC = () => {
         stylePreset: 'pro',
         sessionId: currentSessionId,
       });
+
+      // Check if AI wants to update current file
+      if (response.includes('📁 Updating file:') && currentFile) {
+        const codeMatch = response.match(/```[\w]*\n([\s\S]*?)```/);
+        if (codeMatch) {
+          updateFile(currentFile.name, codeMatch[1]);
+        }
+      }
       
       // Add AI response
       const aiMessage = {
@@ -157,6 +174,7 @@ const CodeArea: React.FC = () => {
     
     if (files.find(f => f.name === newFileName)) {
       toast.error('File already exists');
+      setActiveFile(newFileName); // Just switch to existing file
       return;
     }
     
@@ -164,7 +182,6 @@ const CodeArea: React.FC = () => {
     createFile(newFileName, template);
     setActiveFile(newFileName);
     setNewFileName('');
-    setShouldLiveType(true);
     window.dispatchEvent(new Event('fileCreated'));
     toast.success(`Created ${newFileName}`);
   };

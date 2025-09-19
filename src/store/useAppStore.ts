@@ -157,6 +157,21 @@ export interface AppState {
   
   // Analytics Actions
   updateAnalytics: () => void;
+  
+  // Cosmic Features State
+  cosmicFeatures: {
+    codeTelepathy: boolean;
+    selfEvolvingCode: boolean;
+    holographicVisualizer: boolean;
+    emotionSyntaxHighlighting: boolean;
+    autonomousPairProgrammer: boolean;
+    realityCompiler: boolean;
+    timeLoopOptimizer: boolean;
+    soulVersionControl: boolean;
+    cosmicUI: boolean;
+    digitalGodMode: boolean;
+  };
+  updateCosmicFeatures: (features: Partial<AppState['cosmicFeatures']>) => void;
 }
 
 const defaultSettings: AppSettings = {
@@ -245,6 +260,19 @@ export const useAppStore = create<AppState>()(
         totalCodeLines: 0,
         favoriteLanguages: {},
         dailyUsage: {},
+      },
+
+      cosmicFeatures: {
+        codeTelepathy: false,
+        selfEvolvingCode: false,
+        holographicVisualizer: false,
+        emotionSyntaxHighlighting: false,
+        autonomousPairProgrammer: false,
+        realityCompiler: false,
+        timeLoopOptimizer: false,
+        soulVersionControl: false,
+        cosmicUI: false,
+        digitalGodMode: false,
       },
 
       // Actions
@@ -453,6 +481,11 @@ export const useAppStore = create<AppState>()(
           };
         });
       },
+      
+      updateCosmicFeatures: (newFeatures) => 
+        set((state) => ({ 
+          cosmicFeatures: { ...state.cosmicFeatures, ...newFeatures } 
+        })),
     }),
     {
       name: 'nikku-ai-store',

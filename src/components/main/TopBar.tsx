@@ -17,7 +17,7 @@ const TopBar: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 border-b border-white/6 bg-gradient-to-r from-[var(--card)]/50 to-transparent backdrop-blur-sm">
+    <div className="flex items-center justify-between px-6 py-4 border-b border-white/6 bg-gradient-to-r from-[var(--card)]/50 to-transparent backdrop-blur-sm relative z-10">
       {/* Status Pills */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1 px-3 py-1 bg-[var(--card)] border border-white/12 rounded-full text-xs">
