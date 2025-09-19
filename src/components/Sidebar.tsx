@@ -7,6 +7,7 @@ import MemorySettings from './sidebar/MemorySettings';
 import ChatManagement from './sidebar/ChatManagement';
 import FileManagement from './sidebar/FileManagement';
 import QuickActions from './sidebar/QuickActions';
+import CosmicFeatures from './CosmicFeatures';
 
 const Sidebar: React.FC = () => {
   const { toggleSettings, togglePreviousChats, toggleAnalytics } = useAppStore();
@@ -52,6 +53,11 @@ const Sidebar: React.FC = () => {
       {/* Quick Actions Section */}
       <div className="mb-4">
         <QuickActions />
+      </div>
+      
+      {/* Cosmic Features Section */}
+      <div className="mb-4">
+        <CosmicFeatures />
       </div>
 
       {/* Analytics Section */}

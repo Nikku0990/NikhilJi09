@@ -92,7 +92,7 @@ const NotificationCenter: React.FC = () => {
       {/* Notification Bell */}
       <button
         onClick={() => setShowCenter(!showCenter)}
-        className="fixed top-4 right-4 z-50 p-3 bg-[var(--card)] border border-white/10 rounded-full hover:bg-white/5 transition-colors"
+        className="fixed top-20 right-4 z-40 p-3 bg-[var(--card)] border border-white/10 rounded-full hover:bg-white/5 transition-colors shadow-lg"
       >
         <Bell className="w-5 h-5 text-[var(--text)]" />
         {unreadCount > 0 && (
@@ -104,7 +104,7 @@ const NotificationCenter: React.FC = () => {
 
       {/* Notification Center */}
       {showCenter && (
-        <div className="fixed top-16 right-4 z-50 w-80 max-h-96 bg-[var(--card)] border border-white/10 rounded-xl shadow-2xl overflow-hidden slide-up">
+        <div className="fixed top-32 right-4 z-40 w-80 max-h-96 bg-[var(--card)] border border-white/10 rounded-xl shadow-2xl overflow-hidden slide-up">
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-white">Notifications</h3>

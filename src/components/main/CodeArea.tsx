@@ -39,6 +39,7 @@ const CodeArea: React.FC = () => {
   const [codeChatMessages, setCodeChatMessages] = useState<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: number}>>([]);
   const [codeChatInput, setCodeChatInput] = useState('');
   const [isCodeChatLoading, setIsCodeChatLoading] = useState(false);
+  const [shouldLiveType, setShouldLiveType] = useState(false);
   const editorRef = useRef<any>(null);
   const codeChatEndRef = useRef<HTMLDivElement>(null);
 
@@ -46,8 +47,9 @@ const CodeArea: React.FC = () => {
 
   useEffect(() => {
     if (currentFile) {
-      if (settings.liveTyping && !isLiveTyping) {
+      if (settings.liveTyping && !isLiveTyping && shouldLiveType) {
         startLiveTyping(currentFile.content);
+        setShouldLiveType(false);
       } else {
         setEditorContent(currentFile.content);
       }
@@ -58,6 +60,15 @@ const CodeArea: React.FC = () => {
     }
   }, [currentFile, settings.liveTyping]);
 
+  // Only trigger live typing for newly created files
+  useEffect(() => {
+    const handleFileCreated = () => {
+      setShouldLiveType(true);
+    };
+    
+    window.addEventListener('fileCreated', handleFileCreated);
+    return () => window.removeEventListener('fileCreated', handleFileCreated);
+  }, []);
   const startLiveTyping = async (content: string) => {
     if (!content || isLiveTyping) return;
     
@@ -99,6 +110,7 @@ const CodeArea: React.FC = () => {
     try {
       // Get current file context
       const fileContext = currentFile ? `\n\nCurrent file: ${currentFile.name}\n\`\`\`${currentFile.language}\n${currentFile.content}\n\`\`\`` : '';
+      const { userMemory, filesContext } = useAppStore.getState();
       
       const response = await sendToAPI({
         message: `${userMessage}${fileContext}`,
@@ -152,6 +164,8 @@ const CodeArea: React.FC = () => {
     createFile(newFileName, template);
     setActiveFile(newFileName);
     setNewFileName('');
+    setShouldLiveType(true);
+    window.dispatchEvent(new Event('fileCreated'));
     toast.success(`Created ${newFileName}`);
   };
 
@@ -573,6 +587,11 @@ const CodeArea: React.FC = () => {
                   <div className="flex items-center gap-1">
                     <MessageSquare className="w-3 h-3" />
                     Code Chat
+                    {codeChatMessages.length > 0 && (
+                      <span className="bg-[var(--acc1)] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                        {codeChatMessages.length}
+                      </span>
+                    )}
                   </div>
                 ) : (
                   tab.charAt(0).toUpperCase() + tab.slice(1)
@@ -779,6 +798,12 @@ const CodeArea: React.FC = () => {
                       className="text-xs bg-white/10 hover:bg-white/20 text-[var(--text)] px-2 py-1 rounded transition-colors"
                     >
                       Optimize
+                    </button>
+                    <button
+                      onClick={() => setCodeChatInput('Generate tests for this code')}
+                      className="text-xs bg-white/10 hover:bg-white/20 text-[var(--text)] px-2 py-1 rounded transition-colors"
+                    >
+                      Generate Tests
                     </button>
                   </div>
                 </div>

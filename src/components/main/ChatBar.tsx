@@ -389,6 +389,9 @@ const ChatBar: React.FC = () => {
         // Create file in editor
         createFile(file.name, content);
         
+        // Trigger live typing for new files
+        window.dispatchEvent(new Event('fileCreated'));
+        
         // Add to context for AI
         addFileToContext({
           name: file.name,
