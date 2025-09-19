@@ -197,53 +197,55 @@ const FloatingAIActions: React.FC = () => {
       <div className={`flex flex-col items-end gap-2 transition-all duration-300 ${isExpanded ? 'opacity-100' : 'opacity-90'}`}>
         {/* AI Actions */}
         <div className={`flex flex-col gap-2 transition-all duration-300 ${isExpanded ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-          {/* Cosmic Options Modal */}
-          {showCosmicOptions && (
-            <div className="bg-gradient-to-br from-purple-900/90 to-blue-900/90 backdrop-blur-sm border border-purple-500/30 rounded-xl p-4 w-80 mb-2">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-white font-bold text-sm">🌌 Cosmic Features Available</h4>
-                <button
-                  onClick={() => setShowCosmicOptions(false)}
-                  className="text-gray-400 hover:text-white"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {cosmicActions.map((action) => (
-                  <div key={action.id} className="flex items-center justify-between p-2 bg-black/20 rounded-lg">
-                    <div className="flex-1">
-                      <div className="text-white text-xs font-medium">{action.label}</div>
-                      <div className="text-gray-400 text-xs">{action.description}</div>
+          <>
+            {/* Cosmic Options Modal */}
+            {showCosmicOptions && (
+              <div className="bg-gradient-to-br from-purple-900/90 to-blue-900/90 backdrop-blur-sm border border-purple-500/30 rounded-xl p-4 w-80 mb-2">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-white font-bold text-sm">🌌 Cosmic Features Available</h4>
+                  <button
+                    onClick={() => setShowCosmicOptions(false)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {cosmicActions.map((action) => (
+                    <div key={action.id} className="flex items-center justify-between p-2 bg-black/20 rounded-lg">
+                      <div className="flex-1">
+                        <div className="text-white text-xs font-medium">{action.label}</div>
+                        <div className="text-gray-400 text-xs">{action.description}</div>
+                      </div>
+                      <button
+                        onClick={() => { action.toggle(); activateCosmicFeature(action.label); }}
+                        className={`w-8 h-4 rounded-full transition-colors ${action.enabled ? 'bg-purple-500' : 'bg-gray-600'}`}
+                      >
+                        <div className={`w-3 h-3 bg-white rounded-full transition-transform ${action.enabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => { action.toggle(); activateCosmicFeature(action.label); }}
-                      className={`w-8 h-4 rounded-full transition-colors ${action.enabled ? 'bg-purple-500' : 'bg-gray-600'}`}
-                    >
-                      <div className={`w-3 h-3 bg-white rounded-full transition-transform ${action.enabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                    </button>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-          
-          {aiActions.map((action, index) => (
-            <button
-              key={action.id}
-              onClick={action.action}
-              className={`${action.color} hover:scale-110 text-white p-3 rounded-full shadow-lg transition-all duration-200 group relative`}
-              style={{ animationDelay: `${index * 50}ms` }}
-              title={action.description}
-            >
-              <action.icon className="w-5 h-5" />
-              
-              {/* Tooltip */}
-              <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-black/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                {action.label}
-              </div>
-            </button>
-          ))}
+            )}
+            
+            {aiActions.map((action, index) => (
+              <button
+                key={action.id}
+                onClick={action.action}
+                className={`${action.color} hover:scale-110 text-white p-3 rounded-full shadow-lg transition-all duration-200 group relative`}
+                style={{ animationDelay: `${index * 50}ms` }}
+                title={action.description}
+              >
+                <action.icon className="w-5 h-5" />
+                
+                {/* Tooltip */}
+                <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-black/90 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  {action.label}
+                </div>
+              </button>
+            ))}
+          </>
         </div>
         
         {/* Main Toggle Button */}
