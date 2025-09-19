@@ -261,11 +261,6 @@ const FloatingAIActions: React.FC = () => {
         >
           <Sparkles className="w-5 h-5" />
         </button>
-          onClick={() => setIsExpanded(!isExpanded)}
-          className={`accent-gradient hover:scale-110 text-white p-4 rounded-full shadow-xl transition-all duration-300 pulse-glow ${isExpanded ? 'rotate-45' : ''}`}
-        >
-          <Brain className="w-6 h-6" />
-        </button>
         
         {/* Status Indicator */}
         <div className="text-xs text-center mt-2">
