@@ -106,6 +106,7 @@ const CosmicEngines: React.FC = () => {
         'Timeline synchronization'
       ]
     }
+    ,
     {
       id: 'soulVersionControl',
       title: '👻 Soul-Based Version Control',
