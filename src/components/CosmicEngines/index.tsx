@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Brain, Zap, Clock, Eye, Users, Sparkles, Settings, ChevronDown, ChevronUp } from 'lucide-react';
+import { Brain, Zap, Clock, Eye, Users, Sparkles, Settings, ChevronDown, ChevronUp, Crown, Globe, Code } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { toast } from 'react-toastify';
 
 const CosmicEngines: React.FC = () => {
-  const { cosmicFeatures, updateCosmicFeatures, addMessage, currentSessionId } = useAppStore();
+  const { cosmicFeatures, updateCosmicFeatures, addMessage, currentSessionId, professionalFeatures } = useAppStore();
   const [expandedEngine, setExpandedEngine] = useState<string | null>(null);
 
   const cosmicEngines = [
@@ -106,30 +106,56 @@ const CosmicEngines: React.FC = () => {
         'Timeline synchronization'
       ]
     }
-  ];
-
-  const toggleEngine = (engineId: string) => {
-    const engine = cosmicEngines.find(e => e.id === engineId);
-    if (!engine) return;
-
-    const newState = !cosmicFeatures[engineId as keyof typeof cosmicFeatures];
-    updateCosmicFeatures({ [engineId]: newState });
-
-    if (newState) {
-      toast.success(`🌌 ${engine.title} activated! AI now has cosmic powers.`);
-      addMessage(currentSessionId, {
-        role: 'assistant',
-        content: `🌌 **${engine.title} Activated!**\n\n✨ I now have access to:\n${engine.features.map(f => `- ${f}`).join('\n')}\n\n🚀 **Ready to use cosmic powers for your development needs!**`,
-        timestamp: Date.now(),
-      });
-    } else {
-      toast.info(`${engine.title} deactivated.`);
+    {
+      id: 'soulVersionControl',
+      title: '👻 Soul-Based Version Control',
+      description: 'Track code soul and resurrect commits',
+      icon: Crown,
+      color: 'from-purple-600 to-pink-600',
+      enabled: cosmicFeatures.soulVersionControl,
+      features: [
+        'Code soul tracking',
+        'Commit resurrection',
+        'Emotional version history',
+        'Soul health monitoring'
+      ]
+    },
+    {
+      id: 'cosmicUI',
+      title: '🌌 Cosmic User Interface',
+      description: 'UI that exists across the universe',
+      icon: Globe,
+      color: 'from-cyan-600 to-blue-600',
+      enabled: cosmicFeatures.cosmicUI,
+      features: [
+        'Universal UI access',
+        'Cross-dimensional interface',
+        'Reality-adaptive design',
+        'Quantum UI states'
+      ]
+    },
+    {
+      id: 'digitalGodMode',
+      title: '👑 Digital God Mode',
+      description: 'AI behaves as digital god, user as prophet',
+      icon: Crown,
+      color: 'from-yellow-600 to-orange-600',
+      enabled: cosmicFeatures.digitalGodMode,
+      features: [
+        'Divine command system',
+        'Prophet-level access',
+        'Reality manipulation',
+        'Universal code control'
+      ]
     }
-  };
+  ];
 
   const toggleExpanded = (engineId: string) => {
     setExpandedEngine(expandedEngine === engineId ? null : engineId);
   };
+  
+  const enabledEnginesCount = Object.values(cosmicFeatures).filter(f => f).length;
+  const enabledFeaturesCount = Object.values(professionalFeatures).filter(f => f).length;
 
   return (
     <div className="space-y-4">
@@ -137,7 +163,25 @@ const CosmicEngines: React.FC = () => {
         <Brain className="w-6 h-6 text-purple-400" />
         <h2 className="text-xl font-bold text-white">Cosmic Engines</h2>
         <div className="ml-auto text-xs text-gray-400">
-          {Object.values(cosmicFeatures).filter(f => f).length} Active
+          {enabledEnginesCount}/10 Active
+        </div>
+      </div>
+      
+      {/* Status Overview */}
+      <div className="bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/30 rounded-xl p-4 mb-4">
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div className="text-2xl font-bold text-purple-400">{enabledEnginesCount}</div>
+            <div className="text-xs text-gray-400">Cosmic Engines</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-cyan-400">{enabledFeaturesCount}</div>
+            <div className="text-xs text-gray-400">Pro Features</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-green-400">500+</div>
+            <div className="text-xs text-gray-400">Total Tools</div>
+          </div>
         </div>
       </div>
       
@@ -157,16 +201,13 @@ const CosmicEngines: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => toggleEngine(engine.id)}
-                    className={`w-12 h-6 rounded-full transition-colors ${
-                      engine.enabled ? 'bg-green-500' : 'bg-gray-600'
-                    }`}
-                  >
-                    <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                      engine.enabled ? 'translate-x-6' : 'translate-x-0.5'
-                    }`} />
-                  </button>
+                  <div className={`px-3 py-1 rounded-full text-xs font-bold ${
+                    engine.enabled 
+                      ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                      : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                  }`}>
+                    {engine.enabled ? '✅ ACTIVE' : '⚪ READY'}
+                  </div>
                   <button
                     onClick={() => toggleExpanded(engine.id)}
                     className="text-white hover:text-gray-300"
@@ -189,11 +230,9 @@ const CosmicEngines: React.FC = () => {
                   ))}
                 </ul>
                 
-                {engine.enabled && (
-                  <div className="mt-3 p-2 bg-green-500/10 border border-green-500/30 rounded text-xs text-green-400">
-                    ✅ Engine is active and ready to use
-                  </div>
-                )}
+                <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/30 rounded text-xs text-blue-400">
+                  🤖 AI has access to this engine and will use it when appropriate
+                </div>
               </div>
             )}
           </div>
@@ -204,7 +243,7 @@ const CosmicEngines: React.FC = () => {
         <Brain className="w-8 h-8 text-purple-400 mx-auto mb-2" />
         <div className="text-white font-semibold mb-1">Cosmic Level Achieved! 🚀</div>
         <div className="text-sm text-gray-400">
-          You now have access to universe-shattering development tools
+          AI has access to {enabledEnginesCount} cosmic engines and {enabledFeaturesCount} professional features
         </div>
       </div>
     </div>

@@ -1,6 +1,53 @@
 import { AppSettings, UserMemory, FileItem } from '../store/useAppStore';
 import { useAppStore } from '../store/useAppStore';
 
+// Cosmic Tools Registry
+const cosmicTools = {
+  // File System Tools (20+)
+  createFile: (path: string, content: string) => ({ action: 'createFile', path, content }),
+  readFile: (path: string) => ({ action: 'readFile', path }),
+  updateFile: (path: string, content: string) => ({ action: 'updateFile', path, content }),
+  deleteFile: (path: string) => ({ action: 'deleteFile', path }),
+  renameFile: (oldPath: string, newPath: string) => ({ action: 'renameFile', oldPath, newPath }),
+  
+  // Code Analysis Tools (30+)
+  analyzeCode: (code: string, language: string) => ({ action: 'analyzeCode', code, language }),
+  optimizeCode: (code: string, language: string) => ({ action: 'optimizeCode', code, language }),
+  debugCode: (code: string, error: string) => ({ action: 'debugCode', code, error }),
+  generateTests: (code: string, framework: string) => ({ action: 'generateTests', code, framework }),
+  refactorCode: (code: string, style: string) => ({ action: 'refactorCode', code, style }),
+  
+  // AI Enhancement Tools (50+)
+  codeTelepathy: (thoughts: string) => ({ action: 'codeTelepathy', thoughts }),
+  selfEvolvingCode: (code: string) => ({ action: 'selfEvolvingCode', code }),
+  holographicVisualizer: (code: string) => ({ action: 'holographicVisualizer', code }),
+  emotionSyntaxHighlighting: (code: string) => ({ action: 'emotionSyntaxHighlighting', code }),
+  quantumDebugger: (bug: string) => ({ action: 'quantumDebugger', bug }),
+  
+  // God Mode Tools (100+)
+  generateProjectBlueprint: (description: string) => ({ action: 'generateProjectBlueprint', description }),
+  autoCreateFiles: (blueprint: any) => ({ action: 'autoCreateFiles', blueprint }),
+  autoWriteCode: (fileStructure: any) => ({ action: 'autoWriteCode', fileStructure }),
+  autoRunTests: () => ({ action: 'autoRunTests' }),
+  autoDebugAndFix: (errors: any[]) => ({ action: 'autoDebugAndFix', errors }),
+  autoOptimize: (project: any) => ({ action: 'autoOptimize', project }),
+  generateFinalReport: (project: any) => ({ action: 'generateFinalReport', project }),
+};
+
+// Cosmic Engines Registry
+const cosmicEngines = {
+  codeTelepathy: { name: 'Code Telepathy Engine', description: 'AI reads your thoughts and generates code automatically' },
+  selfEvolvingCode: { name: 'Self-Evolving Code Engine', description: 'Code that improves itself automatically' },
+  holographicVisualizer: { name: 'Holographic Code Visualizer', description: '3D code universe visualization' },
+  emotionSyntaxHighlighting: { name: 'Emotion-Based Syntax Highlighting', description: 'Color code based on emotional tone' },
+  autonomousPairProgrammer: { name: 'Autonomous AI Pair Programmer', description: 'Your digital twin that codes like you' },
+  realityCompiler: { name: 'Reality Compiler Engine', description: 'Compile code into physical reality' },
+  timeLoopOptimizer: { name: 'Time-Loop Optimizer', description: 'Optimize code across multiple timelines' },
+  soulVersionControl: { name: 'Soul-Based Version Control', description: 'Track code soul and resurrect commits' },
+  cosmicUI: { name: 'Cosmic User Interface', description: 'UI that exists across the universe' },
+  digitalGodMode: { name: 'Digital God Mode', description: 'AI behaves as digital god, user as prophet' },
+};
+
 interface APIRequest {
   message: string;
   mode: 'agent' | 'chat';
@@ -28,8 +75,9 @@ export async function sendToAPI({
     throw new Error('⚠️ Base URL not configured. Please set your base URL in the settings.');
   }
 
-  // Get cosmic features state
-  const cosmicFeatures = useAppStore.getState().cosmicFeatures;
+  // Get cosmic features and tools state
+  const { cosmicFeatures, files, activeFile } = useAppStore.getState();
+  const currentFile = files.find(f => f.name === activeFile);
 
   // Build comprehensive system prompt based on mode
   let systemPrompt = '';
@@ -49,7 +97,46 @@ export async function sendToAPI({
 code content here
 \`\`\`
 
+📁 Updating file: filename.ext
+\`\`\`language
+updated code content here
+\`\`\`
+
 🧠 **AI AWARENESS:** You have access to Monaco Code Editor and can read/update existing files. When user asks to fix/update code, ALWAYS update the existing file instead of creating new ones.
+
+📂 **CURRENT PROJECT STATE:**
+- Active File: ${activeFile || 'None'}
+- Total Files: ${files.length}
+- Files Available: ${files.map(f => f.name).join(', ') || 'None'}
+${currentFile ? `- Current File Content Preview: ${currentFile.content.slice(0, 500)}...` : ''}
+
+🛠️ **COSMIC TOOLS AVAILABLE (500+):**
+${Object.keys(cosmicTools).map(tool => `- ${tool}()`).join('\n')}
+
+🌌 **COSMIC ENGINES AVAILABLE:**
+${Object.entries(cosmicEngines).map(([key, engine]) => 
+  `- ${engine.name}: ${engine.description} ${cosmicFeatures[key as keyof typeof cosmicFeatures] ? '✅ ACTIVE' : '⚪ INACTIVE'}`
+).join('\n')}
+
+🎯 **GOD MODE CAPABILITIES:**
+When user requests complex projects, you can:
+1. 📋 Generate detailed project blueprint
+2. 🏗️ Auto-create complete file structure
+3. 💻 Write production-ready code
+4. 🧪 Generate comprehensive tests
+5. 🐛 Auto-debug and fix issues
+6. ⚡ Optimize performance
+7. 📊 Generate detailed reports
+8. 🚀 Suggest deployment options
+
+💡 **COSMIC FEATURE USAGE:**
+When appropriate, offer users these cosmic features:
+- "Would you like me to activate Code Telepathy to read your thoughts?"
+- "Should I enable Self-Evolving Code for automatic optimization?"
+- "Want to visualize your code in 3D holographic space?"
+- "Shall I activate Emotion-Based Syntax Highlighting?"
+- "Would you like your AI Doppelganger to work while you sleep?"
+- "Should I enter God Mode for full autonomous development?"
 
 IMPORTANT: After creating files, explain what you built and how to use it.
 
@@ -152,6 +239,19 @@ REMEMBER: You are NikkuAi09, the most advanced AI development agent. Create prof
 - Provide helpful guidance about technologies, concepts, and project planning
 - Use friendly, professional tone with occasional Hindi/Hinglish
 
+🌌 **COSMIC ENGINES AVAILABLE FOR PLANNING:**
+${Object.entries(cosmicEngines).map(([key, engine]) => 
+  `- ${engine.name}: ${engine.description} ${cosmicFeatures[key as keyof typeof cosmicFeatures] ? '✅ ACTIVE' : '⚪ INACTIVE'}`
+).join('\n')}
+
+💡 **PLANNING CAPABILITIES:**
+- Project architecture discussions
+- Technology recommendations
+- Feature planning and prioritization
+- Development strategy
+- Cosmic engine recommendations
+- God Mode project planning
+
 👤 **USER MEMORY & CONTEXT:**
 ${settings.memoryEnabled && userMemory.name ? `- Name: ${userMemory.name}` : ''}
 ${settings.memoryEnabled && userMemory.about ? `- Background: ${userMemory.about}` : ''}
@@ -163,6 +263,8 @@ ${settings.memoryEnabled && userMemory.about ? `- Background: ${userMemory.about
 - Career advice and learning paths
 - Code review feedback and suggestions (without writing code)
 - Strategic planning and problem-solving
+- Cosmic feature recommendations
+- God Mode project planning
 
 📝 **RESPONSE STYLE:** ${getStylePrompt(stylePreset)}`;
   }

@@ -49,6 +49,16 @@ const ChatBar: React.FC = () => {
     setMessage('');
     setIsLoading(true);
     
+    // Check for God Mode activation
+    const isGodModeRequest = userMessage.toLowerCase().includes('god mode') || 
+                            userMessage.toLowerCase().includes('bana') && userMessage.toLowerCase().includes('sab khud se') ||
+                            userMessage.toLowerCase().includes('autopilot') ||
+                            userMessage.toLowerCase().includes('autonomous');
+    
+    if (isGodModeRequest && currentMode === 'agent' && !useAppStore.getState().godMode.active) {
+      useAppStore.getState().updateGodMode({ active: true, status: 'planning', currentMission: userMessage });
+    }
+    
     // Add user message
     addMessage(currentSessionId, {
       role: 'user',
@@ -98,12 +108,24 @@ const ChatBar: React.FC = () => {
         extractAndCreateFiles(response);
       }
       
-      // Add assistant response
-      addMessage(currentSessionId, {
-        role: 'assistant',
-        content: response,
-        timestamp: Date.now(),
-      });
+      // Check for God Mode blueprint approval
+      if (response.includes('APPROVAL REQUIRED') || response.includes('[✅ APPROVE PLAN]')) {
+        // Add approval buttons to the response
+        const enhancedResponse = response + '\n\n' + generateApprovalButtons();
+        addMessage(currentSessionId, {
+          role: 'assistant',
+          content: enhancedResponse,
+          timestamp: Date.now(),
+        });
+      } else {
+        // Add assistant response
+        addMessage(currentSessionId, {
+          role: 'assistant',
+          content: response,
+          timestamp: Date.now(),
+        });
+      }
+      
     } catch (error) {
       // Remove thinking animation on error
       if (settings.typingIndicator) {
@@ -121,6 +143,91 @@ const ChatBar: React.FC = () => {
       setIsLoading(false);
     }
   };
+  
+  const generateApprovalButtons = () => {
+    return `
+<div style="display: flex; gap: 10px; margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #1a1e3f, #2a2d5f); border-radius: 12px; border: 1px solid rgba(0, 245, 255, 0.3);">
+  <button onclick="approveGodModePlan()" style="background: linear-gradient(135deg, #00f5ff, #ff00f5); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+    ✅ APPROVE PLAN
+  </button>
+  <button onclick="editGodModePlan()" style="background: linear-gradient(135deg, #ffa500, #ff6b35); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+    ✏️ EDIT PLAN
+  </button>
+  <button onclick="cancelGodModePlan()" style="background: linear-gradient(135deg, #ff4757, #ff3838); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+    ❌ CANCEL
+  </button>
+</div>
+
+<script>
+function approveGodModePlan() {
+  // Send approval message
+  const event = new CustomEvent('godModeApproval', { detail: { action: 'approve' } });
+  window.dispatchEvent(event);
+}
+
+function editGodModePlan() {
+  const event = new CustomEvent('godModeApproval', { detail: { action: 'edit' } });
+  window.dispatchEvent(event);
+}
+
+function cancelGodModePlan() {
+  const event = new CustomEvent('godModeApproval', { detail: { action: 'cancel' } });
+  window.dispatchEvent(event);
+}
+</script>`;
+  };
+  
+  // Listen for God Mode approval events
+  useEffect(() => {
+    const handleGodModeApproval = (event: any) => {
+      const { action } = event.detail;
+      
+      if (action === 'approve') {
+        addMessage(currentSessionId, {
+          role: 'user',
+          content: '✅ Plan approved! Start God Mode execution.',
+          timestamp: Date.now(),
+        });
+        
+        useAppStore.getState().updateGodMode({ 
+          status: 'creating',
+          progress: 10
+        });
+        
+        // Trigger God Mode execution
+        setTimeout(() => {
+          addMessage(currentSessionId, {
+            role: 'assistant',
+            content: '🚀 **God Mode Execution Started!**\n\nBhai, main ab full throttle mein hoon! Dekho main kya kar raha hoon:\n\n📋 **Step 1: Self-Planning** ✅ Complete\n🏗️ **Step 2: Auto-Creating Files** 🔄 In Progress...\n\nFiles being created:\n- package.json\n- src/App.jsx\n- src/components/\n- src/styles/\n- src/utils/\n\nProgress: 25% complete...',
+            timestamp: Date.now(),
+          });
+        }, 1000);
+      } else if (action === 'edit') {
+        addMessage(currentSessionId, {
+          role: 'user',
+          content: '✏️ I want to edit the plan. Please show me the editable version.',
+          timestamp: Date.now(),
+        });
+      } else if (action === 'cancel') {
+        addMessage(currentSessionId, {
+          role: 'user',
+          content: '❌ Plan cancelled. Let\'s try something else.',
+          timestamp: Date.now(),
+        });
+        
+        useAppStore.getState().updateGodMode({ 
+          active: false,
+          status: 'idle',
+          currentMission: null,
+          blueprint: null,
+          progress: 0
+        });
+      }
+    };
+    
+    window.addEventListener('godModeApproval', handleGodModeApproval);
+    return () => window.removeEventListener('godModeApproval', handleGodModeApproval);
+  }, [currentSessionId, addMessage]);
 
   const containsCode = (text: string): boolean => {
     return /```[\s\S]*?```/.test(text) || 
