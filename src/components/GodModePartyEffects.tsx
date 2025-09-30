@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Crown, Sparkles, Zap, Star, Heart, Diamond, Flame, Rocket, Lightning, Gem } from 'lucide-react';
+import { Crown, Sparkles, Zap, Star, Heart, Diamond, Flame, Rocket, CloudLightning as Lightning, Gem } from 'lucide-react';
 
 interface PartyEffect {
   id: string;
