@@ -9,20 +9,28 @@ import FileManagement from './sidebar/FileManagement';
 import QuickActions from './sidebar/QuickActions';
 import CosmicEngines from './CosmicEngines';
 import HundredPlusFeatures from './100PlusFeatures';
+import GodModePartyEffects from './GodModePartyEffects';
 
 const Sidebar: React.FC = () => {
-  const { toggleSettings, togglePreviousChats, toggleAnalytics } = useAppStore();
+  const { toggleSettings, togglePreviousChats, toggleAnalytics, godMode } = useAppStore();
 
   return (
-    <aside className="w-80 card-gradient border-r border-white/6 p-4 overflow-auto custom-scrollbar">
+    <aside className={`w-80 ${godMode.active ? 'god-mode-sidebar' : 'card-gradient'} border-r border-white/6 p-4 overflow-auto custom-scrollbar relative`}>
+      {/* God Mode Party Effects */}
+      <GodModePartyEffects isActive={godMode.active} />
+      
       {/* Brand Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-9 h-9 rounded-full logo-gradient flex items-center justify-center">
+      <div className={`flex items-center gap-3 mb-6 ${godMode.active ? 'god-mode-header' : ''}`}>
+        <div className={`w-9 h-9 rounded-full ${godMode.active ? 'god-mode-logo' : 'logo-gradient'} flex items-center justify-center`}>
           <Code2 className="w-5 h-5 text-white" />
         </div>
         <div>
-          <div className="font-bold text-lg text-white">NikkuAi09</div>
-          <small className="text-[var(--muted)] text-xs">Professional AI Development Platform</small>
+          <div className={`font-bold text-lg ${godMode.active ? 'god-mode-title' : 'text-white'}`}>
+            {godMode.active ? '👑 NikkuAi09 GOD' : 'NikkuAi09'}
+          </div>
+          <small className={`text-xs ${godMode.active ? 'god-mode-subtitle' : 'text-[var(--muted)]'}`}>
+            {godMode.active ? 'DIVINE AI DEVELOPMENT POWERS' : 'Professional AI Development Platform'}
+          </small>
         </div>
       </div>
 

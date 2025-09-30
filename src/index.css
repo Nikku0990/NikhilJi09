@@ -237,3 +237,339 @@ pre {
   opacity: 0;
   transition: all 0.3s ease-in;
 }
+
+/* God Mode Styles */
+.god-mode-active {
+  --bg: #1a0d2e;
+  --card: #2d1b3d;
+  --muted: #b794f6;
+  --text: #ffffff;
+  --acc1: #ff0080;
+  --acc2: #00ff80;
+  --acc3: #8000ff;
+}
+
+.god-mode-party-popup {
+  animation: partyPopup 3s ease-out forwards;
+}
+
+@keyframes partyPopup {
+  0% {
+    transform: translateY(100vh) scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(80vh) scale(1.2) rotate(180deg);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-20vh) scale(1) rotate(540deg);
+  }
+  100% {
+    transform: translateY(-100vh) scale(0) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.god-mode-moving-text {
+  animation: moveRightToLeft 3s linear forwards;
+}
+
+@keyframes moveRightToLeft {
+  0% {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100vw);
+    opacity: 0;
+  }
+}
+
+.god-mode-fireworks {
+  animation: fireworks 2s ease-out infinite;
+}
+
+@keyframes fireworks {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(2) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.god-mode-rainbow-wave {
+  animation: rainbowWave 4s ease-in-out infinite;
+}
+
+@keyframes rainbowWave {
+  0%, 100% {
+    transform: translateX(-100%) skewX(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(100%) skewX(15deg);
+    opacity: 0.7;
+  }
+}
+
+.god-mode-energy-ring {
+  animation: energyRing 5s linear infinite;
+}
+
+@keyframes energyRing {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+    opacity: 0.2;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(360deg) scale(0.8);
+    opacity: 0.2;
+  }
+}
+
+/* God Mode Sidebar Styles */
+.god-mode-sidebar {
+  background: linear-gradient(145deg, 
+    rgba(255, 0, 128, 0.2) 0%, 
+    rgba(128, 0, 255, 0.2) 25%,
+    rgba(0, 255, 128, 0.2) 50%,
+    rgba(255, 128, 0, 0.2) 75%,
+    rgba(0, 128, 255, 0.2) 100%);
+  border: 2px solid rgba(255, 0, 128, 0.4);
+  box-shadow: 
+    0 0 30px rgba(255, 0, 128, 0.3),
+    inset 0 0 30px rgba(128, 0, 255, 0.2);
+  animation: godModeSidebar 3s ease-in-out infinite;
+}
+
+@keyframes godModeSidebar {
+  0%, 100% { 
+    filter: hue-rotate(0deg) saturate(1.5);
+    box-shadow: 
+      0 0 30px rgba(255, 0, 128, 0.3),
+      inset 0 0 30px rgba(128, 0, 255, 0.2);
+  }
+  25% { 
+    filter: hue-rotate(90deg) saturate(2);
+    box-shadow: 
+      0 0 40px rgba(0, 255, 128, 0.4),
+      inset 0 0 40px rgba(255, 128, 0, 0.3);
+  }
+  50% { 
+    filter: hue-rotate(180deg) saturate(2.5);
+    box-shadow: 
+      0 0 50px rgba(128, 0, 255, 0.5),
+      inset 0 0 50px rgba(0, 128, 255, 0.4);
+  }
+  75% { 
+    filter: hue-rotate(270deg) saturate(2);
+    box-shadow: 
+      0 0 40px rgba(255, 128, 0, 0.4),
+      inset 0 0 40px rgba(255, 0, 40, 0.3);
+  }
+}
+
+.god-mode-header {
+  animation: godModeHeaderGlow 2s ease-in-out infinite;
+}
+
+@keyframes godModeHeaderGlow {
+  0%, 100% { 
+    text-shadow: 0 0 20px rgba(255, 0, 128, 0.8);
+  }
+  50% { 
+    text-shadow: 
+      0 0 30px rgba(255, 0, 128, 1),
+      0 0 40px rgba(0, 255, 128, 0.8),
+      0 0 50px rgba(128, 0, 255, 0.6);
+  }
+}
+
+.god-mode-logo {
+  background: conic-gradient(from 0deg, 
+    #ff0080, #00ff80, #8000ff, #ff8000, 
+    #0080ff, #ff0040, #40ff00, #ff0080) !important;
+  animation: godModeLogoSpin 2s linear infinite !important;
+  box-shadow: 
+    0 0 25px rgba(255, 0, 128, 0.8),
+    0 0 50px rgba(0, 255, 128, 0.6),
+    0 0 75px rgba(128, 0, 255, 0.4) !important;
+}
+
+@keyframes godModeLogoSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.god-mode-title {
+  background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff8000);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: godModeTextShimmer 2s ease-in-out infinite;
+}
+
+@keyframes godModeTextShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.god-mode-subtitle {
+  color: #b794f6;
+  text-shadow: 0 0 10px rgba(183, 148, 246, 0.8);
+  animation: godModeSubtitlePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes godModeSubtitlePulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; text-shadow: 0 0 15px rgba(183, 148, 246, 1); }
+}
+
+/* God Mode Main Content */
+.god-mode-main {
+  background: linear-gradient(135deg, 
+    rgba(255, 0, 128, 0.05) 0%,
+    rgba(0, 255, 128, 0.05) 25%,
+    rgba(128, 0, 255, 0.05) 50%,
+    rgba(255, 128, 0, 0.05) 75%,
+    rgba(0, 128, 255, 0.05) 100%);
+  animation: godModeMainShimmer 4s ease-in-out infinite;
+}
+
+@keyframes godModeMainShimmer {
+  0%, 100% { filter: hue-rotate(0deg); }
+  25% { filter: hue-rotate(90deg); }
+  50% { filter: hue-rotate(180deg); }
+  75% { filter: hue-rotate(270deg); }
+}
+
+/* God Mode Chat Bubbles */
+.god-mode-active .chat-bubble {
+  background: linear-gradient(145deg, 
+    rgba(255, 0, 128, 0.3), 
+    rgba(128, 0, 255, 0.3)) !important;
+  border: 2px solid rgba(255, 0, 128, 0.5) !important;
+  box-shadow: 
+    0 0 20px rgba(255, 0, 128, 0.3),
+    inset 0 0 20px rgba(128, 0, 255, 0.2) !important;
+  animation: godModeChatGlow 2s ease-in-out infinite !important;
+}
+
+@keyframes godModeChatGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(255, 0, 128, 0.3),
+      inset 0 0 20px rgba(128, 0, 255, 0.2);
+  }
+  50% { 
+    box-shadow: 
+      0 0 40px rgba(255, 0, 128, 0.6),
+      inset 0 0 40px rgba(128, 0, 255, 0.4);
+  }
+}
+
+/* God Mode Buttons */
+.god-mode-active button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease !important;
+}
+
+.god-mode-active button:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 
+    0 0 30px rgba(255, 0, 128, 0.6),
+    0 0 60px rgba(0, 255, 128, 0.4) !important;
+}
+
+.god-mode-active button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+  transition: left 0.5s;
+}
+
+.god-mode-active button:hover::after {
+  left: 100%;
+}
+
+/* God Mode Chat Bubbles */
+.god-mode-user-bubble {
+  background: linear-gradient(145deg, 
+    rgba(0, 128, 255, 0.4), 
+    rgba(0, 255, 128, 0.4)) !important;
+  border: 2px solid rgba(0, 128, 255, 0.6) !important;
+  box-shadow: 
+    0 0 25px rgba(0, 128, 255, 0.4),
+    inset 0 0 25px rgba(0, 255, 128, 0.3) !important;
+}
+
+.god-mode-assistant-bubble {
+  background: linear-gradient(145deg, 
+    rgba(255, 0, 128, 0.4), 
+    rgba(128, 0, 255, 0.4)) !important;
+  border: 2px solid rgba(255, 0, 128, 0.6) !important;
+  box-shadow: 
+    0 0 25px rgba(255, 0, 128, 0.4),
+    inset 0 0 25px rgba(128, 0, 255, 0.3) !important;
+}
+
+/* God Mode Input Fields */
+.god-mode-active input,
+.god-mode-active textarea,
+.god-mode-active select {
+  background: linear-gradient(145deg, 
+    rgba(255, 0, 128, 0.1), 
+    rgba(128, 0, 255, 0.1)) !important;
+  border: 2px solid rgba(255, 0, 128, 0.4) !important;
+  box-shadow: 
+    0 0 15px rgba(255, 0, 128, 0.2),
+    inset 0 0 15px rgba(128, 0, 255, 0.1) !important;
+  color: white !important;
+}
+
+.god-mode-active input:focus,
+.god-mode-active textarea:focus,
+.god-mode-active select:focus {
+  border-color: rgba(0, 255, 128, 0.8) !important;
+  box-shadow: 
+    0 0 30px rgba(0, 255, 128, 0.5),
+    inset 0 0 30px rgba(255, 0, 128, 0.2) !important;
+}
+
+/* God Mode Scrollbars */
+.god-mode-active .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #ff0080, #00ff80) !important;
+  box-shadow: 0 0 10px rgba(255, 0, 128, 0.5) !important;
+}
+
+.god-mode-active .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(128, 0, 255, 0.1) !important;
+}

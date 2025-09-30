@@ -20,7 +20,8 @@ const ChatWindow: React.FC = () => {
     toggleCodeArea,
     showCodeArea,
     addFileToContext,
-    setActiveFile
+    setActiveFile,
+    godMode
   } = useAppStore();
   
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -315,10 +316,10 @@ const ChatWindow: React.FC = () => {
           
           <div className={`max-w-4xl ${message.role === 'user' ? 'order-first' : ''}`}>
             <div
-              className={`p-4 rounded-2xl border transition-all hover:shadow-lg ${
+              className={`p-4 rounded-2xl border transition-all hover:shadow-lg chat-bubble ${
                 message.role === 'user'
-                  ? 'bg-[#0e2746] border-blue-500/20 text-white'
-                  : 'bg-[#161a49] border-purple-500/20 text-white'
+                  ? `${godMode.active ? 'god-mode-user-bubble' : 'bg-[#0e2746]'} border-blue-500/20 text-white`
+                  : `${godMode.active ? 'god-mode-assistant-bubble' : 'bg-[#161a49]'} border-purple-500/20 text-white`
               }`}
             >
               <div 
