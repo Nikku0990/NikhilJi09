@@ -16,6 +16,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useState } from 'react';
 
+// Import file manager and beast coder
+import './utils/fileManager';
+import './utils/beastCoder';
+
 function App() {
   const { settings, showCommandPalette, toggleCommandPalette, godMode } = useAppStore();
   const [isActivatingGodMode, setIsActivatingGodMode] = useState(false);
@@ -26,6 +30,22 @@ function App() {
   useHotkeys('ctrl+k, cmd+k', (e) => {
     e.preventDefault();
     toggleCommandPalette();
+  });
+
+  // God Mode hotkey
+  useHotkeys('ctrl+g, cmd+g', (e) => {
+    e.preventDefault();
+    const { updateGodMode, godMode } = useAppStore.getState();
+    
+    if (godMode.active) {
+      setIsDeactivatingGodMode(true);
+      setShowGodModeActivation(true);
+      updateGodMode({ active: false });
+    } else {
+      setIsActivatingGodMode(true);
+      setShowGodModeActivation(true);
+      updateGodMode({ active: true });
+    }
   });
 
   useEffect(() => {

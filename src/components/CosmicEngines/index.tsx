@@ -4,7 +4,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { toast } from 'react-toastify';
 
 const CosmicEngines: React.FC = () => {
-  const { cosmicFeatures, updateCosmicFeatures, addMessage, currentSessionId, professionalFeatures } = useAppStore();
+  const { cosmicFeatures, updateCosmicFeatures, addMessage, currentSessionId, professionalFeatures, godMode } = useAppStore();
   const [expandedEngine, setExpandedEngine] = useState<string | null>(null);
 
   const cosmicEngines = [
@@ -158,8 +158,26 @@ const CosmicEngines: React.FC = () => {
   const enabledEnginesCount = Object.values(cosmicFeatures).filter(f => f).length;
   const enabledFeaturesCount = Object.values(professionalFeatures).filter(f => f).length;
 
+  const toggleEngine = (engineId: keyof typeof cosmicFeatures) => {
+    const newState = !cosmicFeatures[engineId];
+    updateCosmicFeatures({ [engineId]: newState });
+    
+    const engine = cosmicEngines.find(e => e.id === engineId);
+    if (engine) {
+      if (newState) {
+        toast.success(`✨ ${engine.title} activated!`);
+        addMessage(currentSessionId, {
+          role: 'assistant',
+          content: `🌌 **${engine.title} Activated!**\n\n${engine.description}\n\n✨ This cosmic engine is now available for your development workflow!\n\n🎯 **Features:**\n${engine.features.map(f => `- ${f}`).join('\n')}`,
+          timestamp: Date.now(),
+        });
+      } else {
+        toast.info(`${engine.title} deactivated`);
+      }
+    }
+  };
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${godMode.active ? 'god-mode-engines' : ''}`}>
       <div className="flex items-center gap-2 mb-6">
         <Brain className="w-6 h-6 text-purple-400" />
         <h2 className="text-xl font-bold text-white">Cosmic Engines</h2>
@@ -189,10 +207,11 @@ const CosmicEngines: React.FC = () => {
       {cosmicEngines.map((engine) => {
         const Icon = engine.icon;
         const isExpanded = expandedEngine === engine.id;
+        const isEnabled = cosmicFeatures[engine.id as keyof typeof cosmicFeatures];
         
         return (
-          <div key={engine.id} className="border border-white/10 rounded-xl overflow-hidden">
-            <div className={`p-4 bg-gradient-to-r ${engine.color} bg-opacity-20 hover:bg-opacity-30 transition-all cursor-pointer`}>
+          <div key={engine.id} className={`border border-white/10 rounded-xl overflow-hidden ${isEnabled ? 'ring-2 ring-purple-500/50' : ''}`}>
+            <div className={`p-4 bg-gradient-to-r ${engine.color} ${isEnabled ? 'bg-opacity-30' : 'bg-opacity-20'} hover:bg-opacity-30 transition-all cursor-pointer`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Icon className="w-6 h-6 text-white" />
@@ -203,12 +222,25 @@ const CosmicEngines: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    engine.enabled 
+                    isEnabled 
                       ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
                       : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
                   }`}>
-                    {engine.enabled ? '✅ ACTIVE' : '⚪ READY'}
+                    {isEnabled ? '✅ ACTIVE' : '⚪ READY'}
                   </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleEngine(engine.id as keyof typeof cosmicFeatures);
+                    }}
+                    className={`w-12 h-6 rounded-full transition-colors ${
+                      isEnabled ? 'bg-green-500' : 'bg-gray-600'
+                    }`}
+                  >
+                    <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
+                      isEnabled ? 'translate-x-6' : 'translate-x-0.5'
+                    }`} />
+                  </button>
                   <button
                     onClick={() => toggleExpanded(engine.id)}
                     className="text-white hover:text-gray-300"
@@ -232,7 +264,7 @@ const CosmicEngines: React.FC = () => {
                 </ul>
                 
                 <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/30 rounded text-xs text-blue-400">
-                  🤖 AI has access to this engine and will use it when appropriate
+                  {isEnabled ? '🤖 AI has access to this engine and will use it when appropriate' : '⚪ Activate this engine to unlock its capabilities'}
                 </div>
               </div>
             )}

@@ -520,6 +520,35 @@ pre {
   left: 100%;
 }
 
+/* God Mode Engines */
+.god-mode-engines .border-white\/10 {
+  border-color: rgba(255, 0, 128, 0.3) !important;
+  box-shadow: 0 0 20px rgba(255, 0, 128, 0.2) !important;
+}
+
+.god-mode-engines .bg-gradient-to-r {
+  background: linear-gradient(135deg, 
+    rgba(255, 0, 128, 0.4), 
+    rgba(128, 0, 255, 0.4), 
+    rgba(0, 255, 128, 0.4)) !important;
+  animation: godModeEngineGlow 3s ease-in-out infinite !important;
+}
+
+@keyframes godModeEngineGlow {
+  0%, 100% { 
+    filter: hue-rotate(0deg) saturate(1.5);
+    box-shadow: 0 0 25px rgba(255, 0, 128, 0.3);
+  }
+  33% { 
+    filter: hue-rotate(120deg) saturate(2);
+    box-shadow: 0 0 35px rgba(0, 255, 128, 0.4);
+  }
+  66% { 
+    filter: hue-rotate(240deg) saturate(2);
+    box-shadow: 0 0 35px rgba(128, 0, 255, 0.4);
+  }
+}
+
 /* God Mode Chat Bubbles */
 .god-mode-user-bubble {
   background: linear-gradient(145deg, 

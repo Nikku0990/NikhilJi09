@@ -5,6 +5,7 @@ import { renderMarkdown } from '../../utils/markdown';
 import { toast } from 'react-toastify';
 import ThinkingAnimation from './ThinkingAnimation';
 import { sendToAPI } from '../../utils/api';
+import FileCreationDisplay from './FileCreationDisplay';
 
 const ChatWindow: React.FC = () => {
   const { 
@@ -298,6 +299,22 @@ const ChatWindow: React.FC = () => {
 
   return (
     <div className="h-full overflow-y-auto custom-scrollbar p-6 space-y-4">
+      {/* File Creation Display */}
+      <AnimatePresence>
+        {showFileCreation && (
+          <FileCreationDisplay 
+            files={creatingFiles}
+            onFileClick={(fileName) => {
+              if (!showCodeArea) {
+                toggleCodeArea();
+              }
+              setActiveFile(fileName);
+              toast.success(`📁 Opened ${fileName} in editor`);
+            }}
+          />
+        )}
+      </AnimatePresence>
+      
       {messages.map((message) => (
         message.role === 'thinking' ? (
           <ThinkingAnimation key={message.id} />
