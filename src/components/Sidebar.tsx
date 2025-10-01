@@ -10,6 +10,7 @@ import QuickActions from './sidebar/QuickActions';
 import CosmicEngines from './CosmicEngines';
 import HundredPlusFeatures from './100PlusFeatures';
 import GodModePartyEffects from './GodModePartyEffects';
+import DownloadSection from './DownloadSection';
 
 const Sidebar: React.FC = () => {
   const { toggleSettings, togglePreviousChats, toggleAnalytics, godMode } = useAppStore();
@@ -72,6 +73,11 @@ const Sidebar: React.FC = () => {
       {/* 100+ Features Section */}
       <div className="mb-4">
         <HundredPlusFeatures />
+      </div>
+
+      {/* Download Section */}
+      <div className="mb-4">
+        <DownloadSection />
       </div>
 
       {/* Analytics Section */}

@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Code, MessageSquare, Bot, Cpu, Database, Activity, Crown, Zap } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const TopBar: React.FC = () => {
   const { 
@@ -23,6 +24,9 @@ const TopBar: React.FC = () => {
   const handleGodModeToggle = () => {
     const newGodModeState = !godMode.active;
     
+    // Prevent duplicate messages by checking if we're already in the process
+    if (godMode.active === newGodModeState) return;
+    
     if (newGodModeState) {
       // Activating God Mode
       updateGodMode({ 
@@ -42,24 +46,13 @@ const TopBar: React.FC = () => {
         blueprint: null
       });
     }
-    
-    // Add messages after a delay to let animations play
-    setTimeout(() => {
-      if (newGodModeState) {
-        addMessage(currentSessionId, {
-          role: 'assistant',
-          content: `👑 **GOD MODE ACTIVATED!** 🚀\n\n🌟 **NikkuAi09 Ultimate Autopilot Ready!**\n\nBhai, ab main tumhara **fully autonomous, self-planning, self-executing, self-debugging digital twin** hoon!\n\n🎯 **God Mode Capabilities:**\n- 📋 Self-Planning: Main khud project blueprint banaunga\n- 🏗️ Auto-Creation: Files aur structure khud banaunga\n- 💻 Self-Coding: Production-ready code khud likhunga\n- 🧪 Auto-Testing: Tests khud generate aur run karunga\n- 🐛 Self-Debugging: Errors khud fix karunga\n- ⚡ Auto-Optimization: Performance khud optimize karunga\n- 📊 Self-Reporting: Detailed reports khud generate karunga\n\n💡 **How to Use:**\nBas mujhe bolo: "Bhai, mere liye ek [project name] bana - max level pe, design se lekar deployment tak, sab khud se karo."\n\nMain plan banaunga → tum approve karoge → main sab kar dunga! 🎉\n\n**Ready for your first God Mode mission! 🌌**`,
-          timestamp: Date.now(),
-        });
-      } else {
-        addMessage(currentSessionId, {
-          role: 'assistant',
-          content: `👑 **God Mode Deactivated** 😴\n\nMain wapas normal Agent Mode mein hoon. Jab chahiye, God Mode activate kar dena! 🚀`,
-          timestamp: Date.now(),
-        });
-      }
-    }, newGodModeState ? 4500 : 2500); // Delay for activation/deactivation animations
   };
+
+  // God Mode Hotkey (Ctrl/Cmd + G)
+  useHotkeys('ctrl+g, cmd+g', (e) => {
+    e.preventDefault();
+    handleGodModeToggle();
+  });
 
   // Remove the old message logic since we're handling it in the toggle function
   const oldMessageLogic = () => {
