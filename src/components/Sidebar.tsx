@@ -10,7 +10,8 @@ import QuickActions from './sidebar/QuickActions';
 import CosmicEngines from './CosmicEngines';
 import HundredPlusFeatures from './100PlusFeatures';
 import GodModePartyEffects from './GodModePartyEffects';
-import DownloadSection from './DownloadSection';
+import DesktopDownload from './DesktopDownload';
+import BeastCoder from './BeastCoder';
 
 const Sidebar: React.FC = () => {
   const { toggleSettings, togglePreviousChats, toggleAnalytics, godMode } = useAppStore();
@@ -77,7 +78,7 @@ const Sidebar: React.FC = () => {
 
       {/* Download Section */}
       <div className="mb-4">
-        <DownloadSection />
+        <DesktopDownload />
       </div>
 
       {/* Analytics Section */}
@@ -90,6 +91,13 @@ const Sidebar: React.FC = () => {
           Analytics Dashboard
         </button>
       </div>
+      
+      {/* Beast Coder Integration */}
+      {godMode.active && (
+        <div className="mb-4">
+          <BeastCoder />
+        </div>
+      )}
       {/* Professional Features Preview */}
       <div className="bg-[var(--card)] border border-white/6 rounded-[var(--radius)] p-3 mb-4">
         <h4 className="text-xs uppercase tracking-wider text-[var(--muted)] mb-3 flex items-center gap-2">

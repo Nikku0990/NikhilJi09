@@ -244,50 +244,42 @@ function cancelGodModePlan() {
   const extractAndCreateFiles = (response: string) => {
     // Look for file creation patterns
     const fileCreationPattern = /📁 (?:Creating file|Updating file): ([^\n]+)\n```(\w+)?\n([\s\S]*?)```/g;
+    const filePattern = /FILE:\s*([^\n\r]+)\s*\n(?:```(\w+)?\s*\n([\s\S]*?)```)/gi;
     const codeBlocks = response.match(/```(\w+)?\n([\s\S]*?)```/g);
     if (!codeBlocks) return;
 
     let filesCreated = 0;
     const createdFiles: string[] = [];
+    const [showFileCreation, setShowFileCreation] = useState(false);
+    const [creatingFiles, setCreatingFiles] = useState<Array<{name: string, status: 'creating' | 'updating' | 'complete', content: string}>>([]);
     
     // Show file creation animation
-    toast.info(
-      <div className="flex items-center gap-2">
-        <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-        <span>Creating files...</span>
-      </div>,
-      { autoClose: 2000 }
-    );
+    setShowFileCreation(true);
     
-    // Try to match the file creation format
-    const matches = [...response.matchAll(fileCreationPattern)];
+    // Try to match both patterns
+    const matches = [...response.matchAll(fileCreationPattern), ...response.matchAll(filePattern)];
     matches.forEach((match) => {
       const fileName = match[1].trim();
       const language = match[2] || 'txt';
       const content = match[3].trim();
+      
+      // Add to creating files display
+      setCreatingFiles(prev => [...prev, { name: fileName, status: 'creating', content }]);
       
       // Check if file exists - update instead of create
       const existingFile = files.find(f => f.name === fileName);
       if (existingFile) {
         // Update existing file
         updateFile(fileName, content);
-        toast.success(
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-blue-400 rounded-full animate-pulse"></div>
-            <span>📝 Updated {fileName}</span>
-          </div>,
-          { autoClose: 3000 }
-        );
+        setCreatingFiles(prev => prev.map(f => 
+          f.name === fileName ? { ...f, status: 'complete' } : f
+        ));
       } else {
         // Create new file
         createFile(fileName, content);
-        toast.success(
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
-            <span>✅ Created {fileName}</span>
-          </div>,
-          { autoClose: 3000 }
-        );
+        setCreatingFiles(prev => prev.map(f => 
+          f.name === fileName ? { ...f, status: 'complete' } : f
+        ));
       }
       
       // Add to context
@@ -306,6 +298,12 @@ function cancelGodModePlan() {
       filesCreated++;
       
     });
+    
+    // Hide file creation display after 5 seconds
+    setTimeout(() => {
+      setShowFileCreation(false);
+      setCreatingFiles([]);
+    }, 5000);
     
     // Fallback to regular code block detection
     if (filesCreated === 0) {

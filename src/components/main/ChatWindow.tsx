@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import ThinkingAnimation from './ThinkingAnimation';
 import { sendToAPI } from '../../utils/api';
 import FileCreationDisplay from './FileCreationDisplay';
+import { AnimatePresence } from 'framer-motion';
 
 const ChatWindow: React.FC = () => {
   const { 
@@ -26,6 +27,8 @@ const ChatWindow: React.FC = () => {
   } = useAppStore();
   
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [showFileCreation, setShowFileCreation] = useState(false);
+  const [creatingFiles, setCreatingFiles] = useState<Array<{name: string, status: 'creating' | 'updating' | 'complete', content: string}>>([]);
   const [regeneratingId, setRegeneratingId] = useState<string | null>(null);
   const currentSession = sessions[currentSessionId];
   const messages = currentSession?.messages || [];
