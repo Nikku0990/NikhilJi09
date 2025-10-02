@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Paperclip, Sparkles, MicIcon, StopCircle } from 'lucide-react';
+import { Send, Mic, Paperclip, Sparkles, Mic as MicIcon, StopCircle } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { sendToAPI } from '../../utils/api';
 import { toast } from 'react-toastify';
