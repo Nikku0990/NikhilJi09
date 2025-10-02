@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 const CosmicEngines: React.FC = () => {
   const { cosmicFeatures, updateCosmicFeatures, addMessage, currentSessionId, professionalFeatures, godMode } = useAppStore();
   const [expandedEngine, setExpandedEngine] = useState<string | null>(null);
+  const [lastActivatedEngine, setLastActivatedEngine] = useState<string | null>(null);
 
   const cosmicEngines = [
     {
@@ -165,13 +166,26 @@ const CosmicEngines: React.FC = () => {
     const engine = cosmicEngines.find(e => e.id === engineId);
     if (engine) {
       if (newState) {
+        // Only add activation message if this engine wasn't the last one activated
+        if (lastActivatedEngine !== engineId) {
+          setLastActivatedEngine(engineId);
+          addMessage(currentSessionId, {
+            role: 'assistant',
+            content: `🌌 **${engine.title} Activated!**\n\n${engine.description}\n\n✨ This cosmic engine is now available for your development workflow!\n\n🎯 **Features:**\n${engine.features.map(f => `- ${f}`).join('\n')}`,
+            timestamp: Date.now(),
+          });
+        }
         toast.success(`✨ ${engine.title} activated!`);
-        addMessage(currentSessionId, {
-          role: 'assistant',
-          content: `🌌 **${engine.title} Activated!**\n\n${engine.description}\n\n✨ This cosmic engine is now available for your development workflow!\n\n🎯 **Features:**\n${engine.features.map(f => `- ${f}`).join('\n')}`,
-          timestamp: Date.now(),
-        });
       } else {
+        // Only add deactivation message if this was the last activated engine
+        if (lastActivatedEngine === engineId) {
+          setLastActivatedEngine(null);
+          addMessage(currentSessionId, {
+            role: 'assistant',
+            content: `🌌 **${engine.title} Deactivated**\n\nEngine has been safely powered down. ⚡`,
+            timestamp: Date.now(),
+          });
+        }
         toast.info(`${engine.title} deactivated`);
       }
     }
@@ -216,8 +230,8 @@ const CosmicEngines: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <Icon className="w-6 h-6 text-white" />
                   <div>
-                    <div className="text-white font-semibold">{engine.title}</div>
-                    <div className="text-sm text-gray-300">{engine.description}</div>
+                    <div className="text-white font-semibold text-sm">{engine.title}</div>
+                    <div className="text-xs text-gray-300 leading-tight">{engine.description}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -253,17 +267,17 @@ const CosmicEngines: React.FC = () => {
             
             {isExpanded && (
               <div className="p-4 bg-black/20 border-t border-white/10">
-                <h4 className="text-white font-semibold mb-2">Features:</h4>
-                <ul className="space-y-1">
+                <h4 className="text-white font-semibold mb-2 text-sm">Features:</h4>
+                <ul className="space-y-1 max-h-32 overflow-y-auto custom-scrollbar">
                   {engine.features.map((feature, index) => (
-                    <li key={index} className="text-gray-300 text-sm flex items-center gap-2">
+                    <li key={index} className="text-gray-300 text-xs flex items-center gap-2">
                       <div className="w-1 h-1 bg-purple-400 rounded-full" />
                       {feature}
                     </li>
                   ))}
                 </ul>
                 
-                <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/30 rounded text-xs text-blue-400">
+                <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs text-blue-400">
                   {isEnabled ? '🤖 AI has access to this engine and will use it when appropriate' : '⚪ Activate this engine to unlock its capabilities'}
                 </div>
               </div>
