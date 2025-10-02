@@ -301,7 +301,7 @@ const ChatWindow: React.FC = () => {
   };
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar p-6 space-y-4">
+    <div className={`h-full overflow-y-auto custom-scrollbar p-6 space-y-4 ${godMode.active ? 'god-mode-chat' : ''}`}>
       {/* File Creation Display */}
       <AnimatePresence>
         {showFileCreation && (
@@ -338,8 +338,8 @@ const ChatWindow: React.FC = () => {
             <div
               className={`p-4 rounded-2xl border transition-all hover:shadow-lg chat-bubble ${
                 message.role === 'user'
-                  ? `${godMode.active ? 'god-mode-user-bubble' : 'bg-[#0e2746]'} border-blue-500/20 text-white`
-                  : `${godMode.active ? 'god-mode-assistant-bubble' : 'bg-[#161a49]'} border-purple-500/20 text-white`
+                  ? `${godMode.active ? 'god-mode-user-bubble' : 'bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-blue-500/30'} text-white`
+                  : `${godMode.active ? 'god-mode-assistant-bubble' : 'bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-500/30'} text-white`
               }`}
             >
               <div 

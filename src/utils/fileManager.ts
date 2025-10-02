@@ -1,5 +1,5 @@
 // Enhanced File Manager with Monaco Integration
-// Based on the provided scripts but upgraded for our project
+// Upgraded with Beast Coder integration and professional features
 
 export interface FileItem {
   name: string;
@@ -27,6 +27,50 @@ class EnhancedFileManager {
   constructor(initialFiles?: FileItem[]) {
     if (initialFiles) {
       initialFiles.forEach(file => this.files.set(file.name, file));
+    }
+    
+    // Setup global API for Beast Coder integration
+    this.setupGlobalAPI();
+  }
+  
+  private setupGlobalAPI() {
+    if (typeof window !== 'undefined') {
+      (window as any).NikkuFileManager = this;
+      (window as any).NikkuMonacoAPI = {
+        moveCodeToEditor: this.moveCodeToEditor.bind(this),
+        createFile: this.createFile.bind(this),
+        writeFile: this.updateFile.bind(this),
+        runSyntaxCheck: this.runSyntaxCheck.bind(this),
+        listFiles: this.listFiles.bind(this),
+        guessLangFromName: this.guessLanguageFromName.bind(this)
+      };
+    }
+  }
+  
+  // Enhanced moveCodeToEditor for Beast Coder
+  async moveCodeToEditor(name: string, code: string, options: {
+    language?: string;
+    setCursorToEnd?: boolean;
+    check?: boolean;
+  } = {}): Promise<{ ok: boolean; errors?: any[] }> {
+    try {
+      // Create or update file
+      const existingFile = this.getFile(name);
+      if (existingFile) {
+        await this.updateFile(name, code);
+      } else {
+        await this.createFile(name, code, options.language);
+      }
+
+      // Run syntax check if requested
+      if (options.check !== false) {
+        return await this.runSyntaxCheck(name);
+      }
+
+      return { ok: true };
+    } catch (error) {
+      console.error('Move code to editor failed:', error);
+      return { ok: false, errors: [{ message: error instanceof Error ? error.message : 'Unknown error' }] };
     }
   }
 

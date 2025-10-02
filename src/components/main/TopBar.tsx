@@ -24,11 +24,7 @@ const TopBar: React.FC = () => {
   const handleGodModeToggle = () => {
     const newGodModeState = !godMode.active;
     
-    // Prevent duplicate messages by checking if we're already in the process
-    if (godMode.active === newGodModeState) return;
-    
     if (newGodModeState) {
-      // Activating God Mode
       updateGodMode({ 
         active: true,
         status: 'idle',
@@ -37,7 +33,6 @@ const TopBar: React.FC = () => {
         blueprint: null
       });
     } else {
-      // Deactivating God Mode
       updateGodMode({ 
         active: false,
         status: 'idle',

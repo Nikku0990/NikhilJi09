@@ -46,25 +46,25 @@ const GodModeActivation: React.FC<GodModeActivationProps> = ({
     if (isActivating && !audioPlayed) {
       // Play audio first
       if (audioRef.current) {
-        audioRef.current.play().catch(console.error);
+        audioRef.current.play().catch(() => {
+          console.log('Audio autoplay blocked by browser');
+        });
         setAudioPlayed(true);
       }
       
       // Show moving text immediately
       setShowMovingText(true);
       
-      // Start party popups after 1 second
-      setTimeout(() => {
-        generatePartyPopups();
-      }, 1000);
+      // Generate minimal party popups for 2 seconds only
+      generatePartyPopups();
       
-      // Complete activation after 4 seconds
+      // Complete activation after 3 seconds
       setTimeout(() => {
         setShowMovingText(false);
         setPartyPopups([]);
         onComplete();
         setAudioPlayed(false);
-      }, 4000);
+      }, 3000);
     }
   }, [isActivating, audioPlayed, onComplete]);
 
@@ -83,15 +83,15 @@ const GodModeActivation: React.FC<GodModeActivationProps> = ({
   const generatePartyPopups = () => {
     const popups: PartyPopup[] = [];
     
-    // Generate 50 party popups
-    for (let i = 0; i < 50; i++) {
+    // Generate 20 party popups (reduced for performance)
+    for (let i = 0; i < 20; i++) {
       popups.push({
         id: `popup-${i}`,
         x: Math.random() * window.innerWidth,
         y: window.innerHeight + Math.random() * 200, // Start from bottom
         color: colors[Math.floor(Math.random() * colors.length)],
         icon: icons[Math.floor(Math.random() * icons.length)],
-        delay: Math.random() * 2000, // Random delay up to 2 seconds
+        delay: Math.random() * 1000, // Random delay up to 1 second
       });
     }
     

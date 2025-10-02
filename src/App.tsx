@@ -35,16 +35,16 @@ function App() {
   // God Mode hotkey
   useHotkeys('ctrl+g, cmd+g', (e) => {
     e.preventDefault();
-    const { updateGodMode, godMode } = useAppStore.getState();
+    const { updateGodMode, godMode, addMessage, currentSessionId } = useAppStore.getState();
     
     if (godMode.active) {
+      updateGodMode({ active: false });
       setIsDeactivatingGodMode(true);
       setShowGodModeActivation(true);
-      updateGodMode({ active: false });
     } else {
+      updateGodMode({ active: true });
       setIsActivatingGodMode(true);
       setShowGodModeActivation(true);
-      updateGodMode({ active: true });
     }
   });
 

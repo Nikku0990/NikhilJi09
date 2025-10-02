@@ -94,7 +94,7 @@ const ApiSettings: React.FC = () => {
         updateSettings({ model: selectedProvider.models[0].id });
       }
     }
-  }, [settings.baseUrl]);
+  }, [settings.baseUrl, updateSettings]);
 
   const handleBaseUrlChange = (newBaseUrl: string) => {
     updateSettings({ baseUrl: newBaseUrl });

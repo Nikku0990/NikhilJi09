@@ -8,7 +8,7 @@ import ChatManagement from './sidebar/ChatManagement';
 import FileManagement from './sidebar/FileManagement';
 import QuickActions from './sidebar/QuickActions';
 import CosmicEngines from './CosmicEngines';
-import HundredPlusFeatures from './100PlusFeatures';
+import ProfessionalFeatures from './ProfessionalFeatures';
 import GodModePartyEffects from './GodModePartyEffects';
 import DesktopDownload from './DesktopDownload';
 import BeastCoder from './BeastCoder';
@@ -73,7 +73,7 @@ const Sidebar: React.FC = () => {
 
       {/* 100+ Features Section */}
       <div className="mb-4">
-        <HundredPlusFeatures />
+        <ProfessionalFeatures />
       </div>
 
       {/* Download Section */}

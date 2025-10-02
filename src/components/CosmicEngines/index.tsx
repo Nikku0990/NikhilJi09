@@ -166,26 +166,14 @@ const CosmicEngines: React.FC = () => {
     const engine = cosmicEngines.find(e => e.id === engineId);
     if (engine) {
       if (newState) {
-        // Only add activation message if this engine wasn't the last one activated
-        if (lastActivatedEngine !== engineId) {
-          setLastActivatedEngine(engineId);
-          addMessage(currentSessionId, {
-            role: 'assistant',
-            content: `🌌 **${engine.title} Activated!**\n\n${engine.description}\n\n✨ This cosmic engine is now available for your development workflow!\n\n🎯 **Features:**\n${engine.features.map(f => `- ${f}`).join('\n')}`,
-            timestamp: Date.now(),
-          });
-        }
+        setLastActivatedEngine(engineId);
+        addMessage(currentSessionId, {
+          role: 'assistant',
+          content: `🌌 **${engine.title} Activated!**\n\n${engine.description}\n\n✨ This cosmic engine is now available for your development workflow!\n\n🎯 **Features:**\n${engine.features.map(f => `- ${f}`).join('\n')}`,
+          timestamp: Date.now(),
+        });
         toast.success(`✨ ${engine.title} activated!`);
       } else {
-        // Only add deactivation message if this was the last activated engine
-        if (lastActivatedEngine === engineId) {
-          setLastActivatedEngine(null);
-          addMessage(currentSessionId, {
-            role: 'assistant',
-            content: `🌌 **${engine.title} Deactivated**\n\nEngine has been safely powered down. ⚡`,
-            timestamp: Date.now(),
-          });
-        }
         toast.info(`${engine.title} deactivated`);
       }
     }
