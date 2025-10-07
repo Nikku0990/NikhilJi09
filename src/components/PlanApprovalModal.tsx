@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle, XCircle, Edit3, Clock, FileText, Code, Zap } from 'lucide-react';
+import { CheckCircle, XCircle, CreditCard as Edit3, Clock, FileText, Code, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface PlanApprovalModalProps {
