@@ -474,14 +474,23 @@ ${file.content}
       progress: 0
     });
 
-    // Start Beast Mode for God Mode mission
-    await this.startTask(`God Mode Mission: ${mission}`);
+    // Enhanced God Mode with full autonomous workflow
+    await this.startGodModeWorkflow(mission);
     
     addMessage(currentSessionId, {
       role: 'assistant',
-      content: `👑 **God Mode Mission Started!**\n\n🎯 **Mission:** ${mission}\n\n🤖 **Beast Coder activated for autonomous development!**\n\nI'll now plan, code, test, and deploy everything automatically. Sit back and watch the magic! ✨`,
+      content: `👑 **GOD MODE ACTIVATED!** 🚀\n\n🎯 **Divine Mission:** ${mission}\n\n🌟 **Autonomous Workflow Started:**\n1. 📋 **Self-Planning** - AI generates detailed blueprint\n2. 🏗️ **Auto-Creation** - Files and structure created automatically\n3. 💻 **Self-Coding** - Production-ready code written\n4. 🧪 **Auto-Testing** - Comprehensive tests generated and run\n5. 🐛 **Self-Debugging** - Errors automatically fixed (up to 3 retries)\n6. ⚡ **Auto-Optimization** - Performance optimized\n7. 📊 **Self-Reporting** - Detailed reports generated\n8. 🚀 **Auto-Deployment** - Ready for production\n\n🤖 **I am now your fully autonomous digital god! Sit back and watch the magic! ✨**`,
       timestamp: Date.now(),
     });
+  }
+  
+  private async startGodModeWorkflow(mission: string): Promise<void> {
+    // Enhanced workflow with all features from README
+    await this.generatePlan(mission);
+    // Auto-approve in God Mode
+    setTimeout(() => {
+      this.startBeast(mission);
+    }, 2000);
   }
 }
 

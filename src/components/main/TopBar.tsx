@@ -104,6 +104,7 @@ const TopBar: React.FC = () => {
             <Crown className="w-3 h-3 text-yellow-400 animate-pulse" />
             <span className="text-yellow-400 font-bold">GOD MODE</span>
             <span className="text-white">{godMode.status.toUpperCase()}</span>
+            <span className="text-yellow-300">({godMode.progress}%)</span>
           </div>
         )}
       </div>

@@ -9,6 +9,11 @@ import FileManagement from './sidebar/FileManagement';
 import QuickActions from './sidebar/QuickActions';
 import CosmicEngines from './CosmicEngines';
 import ProfessionalFeatures from './ProfessionalFeatures';
+import VoiceControl from './VoiceControl';
+import SnapshotManager from './SnapshotManager';
+import DeploymentEngine from './DeploymentEngine';
+import TestRunner from './TestRunner';
+import OrchestratorControl from './OrchestratorControl';
 import GodModePartyEffects from './GodModePartyEffects';
 import DesktopDownload from './DesktopDownload';
 import BeastCoder from './BeastCoder';
@@ -64,6 +69,37 @@ const Sidebar: React.FC = () => {
       {/* Quick Actions Section */}
       <div className="mb-4">
         <QuickActions />
+      </div>
+      
+      {/* Voice Control Section */}
+      <div className="mb-4">
+        <VoiceControl onTranscript={(text) => {
+          useAppStore.getState().addMessage(currentSessionId, {
+            role: 'user',
+            content: text,
+            timestamp: Date.now(),
+          });
+        }} />
+      </div>
+      
+      {/* Orchestrator Control Section */}
+      <div className="mb-4">
+        <OrchestratorControl />
+      </div>
+      
+      {/* Snapshot Manager Section */}
+      <div className="mb-4">
+        <SnapshotManager />
+      </div>
+      
+      {/* Test Runner Section */}
+      <div className="mb-4">
+        <TestRunner />
+      </div>
+      
+      {/* Deployment Engine Section */}
+      <div className="mb-4">
+        <DeploymentEngine />
       </div>
       
       {/* Cosmic Engines Section */}

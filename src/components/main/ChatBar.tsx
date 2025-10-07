@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Paperclip, Sparkles, Mic as MicIcon, StopCircle } from 'lucide-react';
+import { Send, Mic, Paperclip, Sparkles, Mic as MicIcon, StopCircle, Crown, Zap, Brain } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import { sendToAPI } from '../../utils/api';
 import { toast } from 'react-toastify';
@@ -18,7 +18,9 @@ const ChatBar: React.FC = () => {
     addFileToContext,
     toggleCodeArea,
     showCodeArea,
-    setActiveFile
+    setActiveFile,
+    godMode,
+    updateGodMode
   } = useAppStore();
   
   const [message, setMessage] = useState('');
@@ -55,10 +57,18 @@ const ChatBar: React.FC = () => {
     const isGodModeRequest = userMessage.toLowerCase().includes('god mode') || 
                             userMessage.toLowerCase().includes('bana') && userMessage.toLowerCase().includes('sab khud se') ||
                             userMessage.toLowerCase().includes('autopilot') ||
-                            userMessage.toLowerCase().includes('autonomous');
+                            userMessage.toLowerCase().includes('autonomous') ||
+                            userMessage.toLowerCase().includes('beast mode') ||
+                            userMessage.toLowerCase().includes('full project');
     
     if (isGodModeRequest && currentMode === 'agent' && !useAppStore.getState().godMode.active) {
       useAppStore.getState().updateGodMode({ active: true, status: 'planning', currentMission: userMessage });
+      
+      // Trigger Beast Coder for God Mode
+      setTimeout(() => {
+        const { beastCoder } = require('../../utils/beastCoder');
+        beastCoder.activateGodMode(userMessage);
+      }, 1000);
     }
     
     // Add user message
