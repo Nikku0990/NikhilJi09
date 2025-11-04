@@ -96,16 +96,21 @@ function App() {
     setIsDeactivatingGodMode(false);
     setShowGodModeActivation(false);
   };
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
   return (
     <GodModeTheme isGodMode={godMode.active}>
       <div className={`${godMode.active ? 'god-mode-active' : 'cosmic-bg'} text-[var(--text)] font-sans relative overflow-hidden`}>
         {/* Background Animation */}
         {!godMode.active && <BackgroundAnimation />}
-        
+
         <div className="grid grid-cols-[320px_1fr] h-screen">
           {/* Sidebar */}
           <Sidebar />
-          
+
           {/* Main Content Area */}
           <MainContent />
         </div>
